@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.nextftc.java;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.rowanmcalpin.nextftc.core.Subsystem;
 import com.rowanmcalpin.nextftc.core.command.Command;
 import com.rowanmcalpin.nextftc.core.command.utility.InstantCommand;
