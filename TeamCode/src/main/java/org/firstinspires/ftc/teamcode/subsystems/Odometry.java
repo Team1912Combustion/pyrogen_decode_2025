@@ -11,7 +11,7 @@ public class Odometry {
     public static final Odometry INSTANCE = new Odometry();
 
     PinPoint pinpoint;
-    Limelight limelight;
+    LimeLight limelight;
     private Odometry() { }
 
     private double robot_x;

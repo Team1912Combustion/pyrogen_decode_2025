@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.CRServo;
 
 public class Shooter {
     public static final Shooter INSTANCE = new Shooter();
@@ -12,7 +13,7 @@ public class Shooter {
 
     private DcMotorEx left_motor = null;
     private DcMotorEx right_motor = null;
-    private Servo kicker = null;
+    private CRServo kicker = null;
 
     private String left_name = "left_shooter";
     private String right_name = "right_shooter";
@@ -36,28 +37,30 @@ public class Shooter {
         right_motor.setPower(0.);
     }
 
-    public void kickeron() {
-        kicker.setSpeed(0.5);
-    }
-    public void kickeron() {
-        kicker.setSpeed(0.);
+    public double getSpeed() {
+        return left_motor.getVelocity();
     }
 
-    public void init(HardwareMap hmap) {
-        kicker = hmap.get(DcMotorEx.class,servo_name);
-        left_motor = hmap.get(DcMotorEx.class,left_name);
-        right_motor = hmap.get(DcMotorEx.class,left_name);
+    public void kickeron() {
+        kicker.setPower(0.5);
+    }
+    public void kickeroff() {
+        kicker.setPower(0.);
+    }
+
+    public void init(HardwareMap hMap) {
+        kicker = hMap.get(CRServo.class,servo_name);
+        left_motor = hMap.get(DcMotorEx.class,left_name);
+        right_motor = hMap.get(DcMotorEx.class,left_name);
         left_motor.setDirection(DcMotorSimple.Direction.FORWARD);
         right_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        left_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.COAST);
-        right_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.COAST);
+        left_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        right_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         left_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         right_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-	this.stop()
-        timer = new ElapsedTime();
-        timer.reset();
+        stop();
     }
 
 }

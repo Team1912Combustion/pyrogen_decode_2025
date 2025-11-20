@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode.subsystem;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -8,10 +8,17 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
+import org.firstinspires.ftc.teamcode.utils.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class LimeLight {
@@ -27,7 +34,11 @@ public class LimeLight {
     private int PPG_TAG_ID =  23;
     private int RED_TAG_ID =  24;
 
-    private final static boolean LEDS = False;
+    private final static boolean LEDS = false;
+    public DcMotor ledBlue = null;
+    public DcMotor ledRed = null;
+
+    private List<Integer> ob_arr = new ArrayList<Integer>(3);
 
     public void init(HardwareMap hardwareMap)
     {
@@ -72,8 +83,8 @@ public class LimeLight {
         if (result.isValid()) {
             List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
             for (LLResultTypes.FiducialResult fr : fiducialResults) {
-                Pose3D t_pose = fr.getTargetPoseCameraSpace()
-                if (t_pose.rx * yaw_sign > 0) {
+                Pose3D t_pose = fr.getTargetPoseCameraSpace();
+                if (t_pose.getOrientation().getPitch() * yaw_sign > 0) {
                     return fr.getFiducialId();
                 }
             }
@@ -103,17 +114,17 @@ public class LimeLight {
 
     // FTC Pose2D
     public Pose2D getPose2D() {
-        Pose2D pose2D = new Pose2D();
+        Pose2D pose2D = new Pose2D(DistanceUnit.INCH,-999.,-999., AngleUnit.DEGREES,0.);
         LLResult result = limelight.getLatestResult();
         if (result.isValid()) {
             //Pose3D botpose = result.getBotpose();
             //Pose3D botposeMt2 = result.getBotpose_MT2();
             Pose3D pose3D = result.getBotpose_MT2();
             pose2D = new Pose2D(DistanceUnit.INCH,
-                                pose3D.getX(DistanceUnit.INCH),
-                                pose3D.getY(DistanceUnit.INCH),
+                                pose3D.getPosition().x,
+                                pose3D.getPosition().y,
                                 AngleUnit.DEGREES,
-				pose3D.getHeading(AngleUnit.DEGREES)));
+                                pose3D.getOrientation().getYaw(AngleUnit.DEGREES));
         }
         return pose2D;
     }

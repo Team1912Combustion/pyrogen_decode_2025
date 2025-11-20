@@ -75,8 +75,8 @@ public class RunTeleop extends OpMode {
             Vision.INSTANCE.ledOn();
         }
 
-        boolean intakeInButton = gamepad1.left_trigger > 0.2;
-        boolean intakeOutButton = gamepad1.left_bumper;
+        boolean intakeInButton = gamepad1.dpad_up;
+        boolean intakeOutButton = gamepad1.dpad_down;
         if (intakeOutButton && intakeInButton) {
             intakeInButton = false;
             intakeOutButton = false;
@@ -93,6 +93,8 @@ public class RunTeleop extends OpMode {
         if (shooterLaunchButton && shooterBackButton) {
             shooterLaunchButton = false;
         }
+
+        boolean kickerButton = gamepad1.left_bumper;
 
         // INTAKE CODE
         if (intakeInButton) {
@@ -128,6 +130,12 @@ public class RunTeleop extends OpMode {
             Shooter.INSTANCE.back();
         } else {
             Shooter.INSTANCE.stop();
+        }
+
+        if (kickerButton) {
+            Shooter.INSTANCE.kickeron();
+        } else {
+            Shooter.INSTANCE.kickeroff();
         }
 
         telemetry.addData("Shooter Speed:",Shooter.INSTANCE.getSpeed());
