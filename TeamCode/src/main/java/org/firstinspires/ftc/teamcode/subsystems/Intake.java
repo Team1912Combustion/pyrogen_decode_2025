@@ -1,37 +1,45 @@
 package org.firstinspires.ftc.teamcode.subsystems;
-import com.rowanmcalpin.nextftc.core.Subsystem;
-import com.rowanmcalpin.nextftc.core.command.Command;
-import com.rowanmcalpin.nextftc.core.command.utility.InstantCommand;
-import com.rowanmcalpin.nextftc.core.control.controllers.PIDFController;
-import com.rowanmcalpin.nextftc.ftc.hardware.controllables.MotorEx;
-import com.rowanmcalpin.nextftc.ftc.hardware.controllables.RunToPosition;
-public class Intake extends Subsystem {
 
-    public static final Intake Instance = new Intake();
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.seattlesolvers.solverslib.command.Command;
+import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.Subsystem;
+import com.seattlesolvers.solverslib.hardware.motors.Motor;
+import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
-    private Intake() { }
+public class Intake implements Subsystem {
 
-    private MotorEx motor;
+    String motor_name = "intake_motor";
 
-    public PIDFController controller = new PIDFController(0.005,0.0,0.0);
+    private static double INTAKE_IN_POWER = .65;
+    private static double INTAKE_OUT_POWER = -0.7;
+    private static double INTAKE_OFF_POWER = 0.;
+    private MotorEx intake_motor;
 
-    public Command resetZero()  {
-        return new InstantCommand(() -> { motor.resetEncoder(); });}
-    public String name = "Intake_Motor";
-
-    public Command toLow() {
-        return new RunToPosition(motor,0.0,controller,this);
-
+    public Intake(final HardwareMap hardwareMap) {
+        intake_motor = new MotorEx(hardwareMap, motor_name);
+        intake_motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        intake_motor.setInverted(true);
     }
-    public Command toMiddle() {
-        return new RunToPosition(motor,0.0,controller,this);
+
+    public void set_in(){
+        intake_motor.set(INTAKE_IN_POWER);
     }
-    public Command toHigh() {
-        return new RunToPosition(motor,0.0,controller,this);
+    public void set_out(){
+        intake_motor.set(INTAKE_OUT_POWER);
     }
-    @Override
-    public void initialize() {
-        motor = new MotorEx(name);
+    public void set_off(){
+        intake_motor.set(INTAKE_OFF_POWER);
+    }
+
+    public Command intake_in(){
+        return new InstantCommand(this::set_in,this);
+    }
+    public Command intake_out(){
+        return new InstantCommand(this::set_out, this);
+    }
+    public Command intake_off(){
+        return new InstantCommand(this::set_off,this);
     }
 
 }
