@@ -1,45 +1,38 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.seattlesolvers.solverslib.command.Command;
-import com.seattlesolvers.solverslib.command.InstantCommand;
-import com.seattlesolvers.solverslib.command.Subsystem;
-import com.seattlesolvers.solverslib.hardware.motors.Motor;
-import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
-public class Intake implements Subsystem {
+public class Intake {
+    public static final Intake INSTANCE = new Intake();
+    private Intake() { }
 
-    String motor_name = "intake_motor";
+    private String motor_name = "intake_motor";
+    public DcMotorEx intake_motor;
 
-    private static double INTAKE_IN_POWER = .65;
-    private static double INTAKE_OUT_POWER = -0.7;
-    private static double INTAKE_OFF_POWER = 0.;
-    private MotorEx intake_motor;
+    private double INTAKE_OUT_POWER = 0.59;
+    private double INTAKE_IN_POWER = -0.80;
+    private double INTAKE_OFF_POWER = 0.0;
+    private double INTAKE_MIN_POWER = -0.2;
 
-    public Intake(final HardwareMap hardwareMap) {
-        intake_motor = new MotorEx(hardwareMap, motor_name);
-        intake_motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        intake_motor.setInverted(true);
+    public void intakein(){
+        intake_motor.setPower(INTAKE_IN_POWER);
+    }
+    public void intakeout(){
+        intake_motor.setPower(INTAKE_OUT_POWER);
+    }
+    public void intakeoff() {
+        double minSpeed = 0.;
+        if (Drive.INSTANCE.fwdSpeed > 0.1) {
+            minSpeed = INTAKE_MIN_POWER;
+        }
+        intake_motor.setPower(minSpeed);
     }
 
-    public void set_in(){
-        intake_motor.set(INTAKE_IN_POWER);
-    }
-    public void set_out(){
-        intake_motor.set(INTAKE_OUT_POWER);
-    }
-    public void set_off(){
-        intake_motor.set(INTAKE_OFF_POWER);
-    }
+    public void init(HardwareMap hMap) {
+        intake_motor = hMap.get(DcMotorEx.class, motor_name);
 
-    public Command intake_in(){
-        return new InstantCommand(this::set_in,this);
+        intake_motor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
-    public Command intake_out(){
-        return new InstantCommand(this::set_out, this);
-    }
-    public Command intake_off(){
-        return new InstantCommand(this::set_off,this);
-    }
-
 }

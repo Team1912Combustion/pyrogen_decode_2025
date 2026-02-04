@@ -1,148 +1,94 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.pedropathing.util.Timer;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
-import com.seattlesolvers.solverslib.command.Command;
-import com.seattlesolvers.solverslib.command.InstantCommand;
-import com.seattlesolvers.solverslib.command.Subsystem;
-import com.seattlesolvers.solverslib.drivebase.MecanumDrive;
-import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
-public class Drive implements Subsystem {
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-    public MecanumDrive drive = null;
+/*
+ * Positive X is forward
+ * Positive Y is strafe left
+ * Positive Yaw is counter-clockwise
+   double frontLeftPower    =  x - y - yaw;
+   double frontRightPower   =  x + y + yaw;
+   double backLeftPower     =  x + y - yaw;
+   double backRightPower    =  x - y + yaw;
+*/
 
-    private MotorEx left_front = null;
-    private MotorEx left_back = null;
-    private MotorEx right_front = null;
-    private MotorEx right_back = null;
-    private Odometry odometry = null;
+public class Drive {
 
-    public Drive(HardwareMap hardwareMap, Odometry m_odometry) {
-        left_front  = new MotorEx(hardwareMap, "left_front");
-        left_back   = new MotorEx(hardwareMap, "left_back");
-        right_front = new MotorEx(hardwareMap, "right_front");
-        right_back  = new MotorEx(hardwareMap, "right_back");
+    public static final Drive INSTANCE = new Drive();
 
-        left_front.setInverted(true);
-        left_back.setInverted(true);
+    private Drive() { }
 
-        left_front.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
-        right_front.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
-        left_back.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
-        right_back.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.BRAKE);
-        left_front.resetEncoder();
-        right_front.resetEncoder();
-        left_back.resetEncoder();
-        right_back.resetEncoder();
-        left_front.setRunMode(MotorEx.RunMode.VelocityControl);
-        right_front.setRunMode(MotorEx.RunMode.VelocityControl);
-        left_back.setRunMode(MotorEx.RunMode.VelocityControl);
-        right_back.setRunMode(MotorEx.RunMode.VelocityControl);
+    private AutoDrive autoDrive;
+    private Telemetry telemetry;
 
-        drive = new MecanumDrive(
-                left_front,
-                right_front,
-                left_back,
-                right_back
-        );
+    private DcMotorEx left_front = null;
+    private DcMotorEx right_front = null;
+    private DcMotorEx left_back = null;
+    private DcMotorEx right_back = null;
 
-        odometry = m_odometry;
+    private String lf_name = "left_front";
+    private String lb_name = "left_back";
+    private String rf_name = "right_front";
+    private String rb_name = "right_back";
+
+    public double fwdSpeed;
+
+    public void init(HardwareMap hmap) {
+        left_front = hmap.get(DcMotorEx.class,lf_name);
+        right_front = hmap.get(DcMotorEx.class,rf_name);
+        left_back = hmap.get(DcMotorEx.class,lb_name);
+        right_back = hmap.get(DcMotorEx.class,rb_name);
+
+        left_front.setDirection(DcMotorSimple.Direction.FORWARD);
+        left_back.setDirection(DcMotorSimple.Direction.FORWARD);
+        right_front.setDirection(DcMotorSimple.Direction.REVERSE);
+        right_back.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        left_front.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        right_front.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        left_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        right_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        left_front.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right_front.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_back.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right_back.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left_front.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        right_front.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        left_back.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        right_back.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public Command stop() {
-        return new InstantCommand(this::setStop);
+    public void stop() {
+        left_front.setPower(0.);
+        right_front.setPower(0.);
+        left_back.setPower(0.);
+        right_back.setPower(0.);
     }
 
-    public Command squareToTarget() {
-        return new InstantCommand(this::runSquareToTarget).
-                andThen(new InstantCommand(this::forward12));
-    }
-
-    public void setStop() {
-        drive.stop();
-    }
-
-    public void runSquareToTarget() {
-        final double timeout = 3.;
-        final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
-        //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
-        //  applied to the drive motors to correct the error.
-        //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
-        final double SPEED_GAIN  =  0.02  ;   //  Forward Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-        final double STRAFE_GAIN =  0.015 ;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
-        final double TURN_GAIN   =  0.01  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
-        final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value
-        final double MAX_AUTO_STRAFE= 0.5;   //  Clip the strafing speed to this max value
-        final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value
-
-        int target_id = Vision.INSTANCE.target_id;
-        Timer m_timer = new Timer();
-        Vision.TargetPose targetPose = Vision.INSTANCE.targetPose;
-
-        m_timer.resetTimer();;
-        while (ActiveOpMode.INSTANCE.isActive() && m_timer.getElapsedTimeSeconds() < timeout) {
-            targetPose = Vision.INSTANCE.getTargetPose();
-            if (targetPose.id > 0) {
-            // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
-                double  rangeError      = (targetPose.pose.range - DESIRED_DISTANCE);
-                double  headingError    = targetPose.pose.bearing;
-                double  yawError        = targetPose.pose.yaw;
-                // Use the speed and turn "gains" to calculate how we want the robot to move.
-                double drive  = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-                double turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
-                double strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
-                moveRobot(drive, strafe, turn);
-            }
-        }
-    }
-
-    public Command autoAim() {
-        return new InstantCommand(this::doAutoAim, this).withTimeout(1000);
-    }
-
-    public void doAutoAim() {
-        final double TURN_GAIN = 0.05;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
-        final double MAX_AUTO_TURN = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
-        double minHeadingError = 5.;
+    public void autoAim() {
+        final double TURN_GAIN   =  0.05  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+        final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
         double headingError = Vision.INSTANCE.getTargetBearing();
-        double turn = 0.;
-        while (ActiveOpMode.INSTANCE.isActive() & headingError > minHeadingError) {
-            turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
-            headingError = Vision.INSTANCE.getTargetBearing();
-            moveRobot(0., 0., turn);
-        }
+        double turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
+        moveRobot(0.,0.,turn);
     }
-
-    public void forward12() {
-    }
-
-    public void moveRobot(double x, double y, double yaw) {
-        double frontLeftPower    =  x - y - yaw;
-        double frontRightPower   =  x + y + yaw;
-        double backLeftPower     =  x + y - yaw;
-        double backRightPower    =  x - y + yaw;
-        double max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
-        max = Math.max(max, Math.abs(backLeftPower));
-        max = Math.max(max, Math.abs(backRightPower));
-        if (max > 1.0) {
-            frontLeftPower /= max;
-            frontRightPower /= max;
-            backLeftPower /= max;
-            backRightPower /= max;
-        }
-        left_front.set(frontLeftPower);
-        right_front.set(frontRightPower);
-        left_back.set(backLeftPower);
-        right_back.set(backRightPower);
-    }
-
-    public void drive(double fwd, double str, double rot) {
-        drive.driveRobotCentric(str, fwd, rot);
-    }
-    public void driveField(double fwd, double str, double rot) {
-        drive.driveFieldCentric(str, fwd, rot, odometry.getRot());
+    public void moveRobot(double fwd, double strafe, double rot) {
+        fwdSpeed = fwd;
+        double denominator = Math.max(Math.abs(strafe) + Math.abs(fwd) + Math.abs(rot), 1.0);
+        double frontLeftPower = (fwd - strafe - rot) / denominator;
+        double frontRightPower = (fwd + strafe + rot) / denominator;
+        double backLeftPower = (fwd + strafe - rot) / denominator;
+        double backRightPower = (fwd - strafe + rot) / denominator;
+        left_front.setPower(frontLeftPower);
+        right_front.setPower(frontRightPower);
+        left_back.setPower(backLeftPower);
+        right_back.setPower(backRightPower);
     }
 
 }

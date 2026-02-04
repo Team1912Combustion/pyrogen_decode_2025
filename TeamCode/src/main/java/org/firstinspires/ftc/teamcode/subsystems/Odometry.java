@@ -1,33 +1,22 @@
 
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.seattlesolvers.solverslib.command.Command;
-import com.seattlesolvers.solverslib.command.InstantCommand;
-import com.seattlesolvers.solverslib.command.Subsystem;
-import com.seattlesolvers.solverslib.geometry.Pose2d;
-import com.seattlesolvers.solverslib.geometry.Rotation2d;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.utils.Pose2d;
+import org.firstinspires.ftc.teamcode.utils.Rotation2d;
 
-public class Odometry implements Subsystem {
+public class Odometry {
+    public static final Odometry INSTANCE = new Odometry();
 
-    private PinPoint pinpoint;
-    private Telemetry telemetry;
+    PinPoint pinpoint;
+    private Odometry() { }
 
     private double robot_x;
     private double robot_y;
     private double robot_heading = 0;
     private boolean iAmBlue = true;
-    private boolean iAmAtGoal = true;
-
-    public Odometry(final HardwareMap hardwareMap, final Telemetry m_telemetry) {
-        pinpoint = new PinPoint(hardwareMap);
-        telemetry = m_telemetry;
-    }
 
     public double getX() {
         return robot_x;
@@ -35,7 +24,6 @@ public class Odometry implements Subsystem {
     public double getY() {
         return robot_y;
     }
-
     public double getHeading() {
         return robot_heading;
     }
@@ -79,11 +67,6 @@ public class Odometry implements Subsystem {
         robot_y += y;
     }
 
-    public void send() {
-        telemetry.addData("Odo pose x:y:r",
-                "%f:%f:%f", robot_x, robot_y, robot_heading);
-    }
-
     public void update() {
         Pose2d pose = pinpoint.getPose2d();
         robot_x = pose.getX();
@@ -120,9 +103,8 @@ public class Odometry implements Subsystem {
         return fixedRot;
     }
 
-    public void init(boolean m_iAmBlue, boolean m_iAmAtGoal) {
-        iAmBlue = m_iAmBlue;
-        iAmAtGoal = m_iAmAtGoal;
+    public void init(boolean iAmBlue, boolean iAmAtGoal) {
+        pinpoint = PinPoint.INSTANCE;
         if (iAmAtGoal) {
             if (iAmBlue) {
                 robot_y = 0;
@@ -147,13 +129,8 @@ public class Odometry implements Subsystem {
         set(robot_x, robot_y, robot_heading);
     }
 
-    public Command run_update() {
-        return new InstantCommand(this::update, this)
-                .andThen(new InstantCommand(this::send, this));
-    }
-
-    @Override
-    public void periodic() {
+    public void teleinit() {
+        pinpoint = PinPoint.INSTANCE;
         update();
     }
 

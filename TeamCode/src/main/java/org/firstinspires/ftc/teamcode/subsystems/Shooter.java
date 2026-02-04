@@ -1,93 +1,88 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import com.seattlesolvers.solverslib.command.Command;
-import com.seattlesolvers.solverslib.command.InstantCommand;
-import com.seattlesolvers.solverslib.command.Subsystem;
-import com.seattlesolvers.solverslib.hardware.motors.CRServo;
-import com.seattlesolvers.solverslib.hardware.motors.Motor;
-import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
-import com.seattlesolvers.solverslib.hardware.motors.MotorGroup;
+public class Shooter {
+    public static final Shooter INSTANCE = new Shooter();
+    private Shooter() { }
 
-public class Shooter implements Subsystem {
-
-    private MotorEx left_motor;
-    private MotorEx right_motor;
-    private MotorGroup motors;
-    private CRServo kicker;
+    private DcMotorEx left_motor = null;
+    private DcMotorEx right_motor = null;
+    private DcMotorEx kicker = null;
 
     private String left_name = "left_shooter";
     private String right_name = "right_shooter";
-    private String servo_name = "kicker";
+    private String kicker_name = "kicker";
 
+
+    private static double POWER_TO_LAUNCH = -.35;
     private static double SHOOTER_SPEED_LOW = .2;
     private static double SHOOTER_SPEED_MED = .45;
     private static double SHOOTER_SPEED_HIGH = .5;
+    private static double POWER_TO_BACK = -.25;
 
-    private static double KICKER_SPEED_ON = .5;
-    private static double KICKER_SPEED_OUT = -.5;
-
-    public Shooter(HardwareMap hMap) {
-        kicker = new CRServo(hMap, servo_name);
-        left_motor = new MotorEx(hMap, left_name);
-        right_motor = new MotorEx(hMap, right_name);
-        right_motor.setInverted(true);
-        motors = new MotorGroup(left_motor,right_motor);
-        motors.setRunMode(Motor.RunMode.VelocityControl);
-        motors.setZeroPowerBehavior(MotorEx.ZeroPowerBehavior.FLOAT);
-        motors.set(0.);
+    public void back() {
+        left_motor.setPower(POWER_TO_BACK);
+        right_motor.setPower(POWER_TO_BACK);
     }
 
-    public void set_high(){
-        motors.set(SHOOTER_SPEED_HIGH);
+    public void launch() {
+        left_motor.setPower(POWER_TO_LAUNCH);
+        right_motor.setPower(POWER_TO_LAUNCH);
     }
-    public void set_medium(){
-        motors.set(SHOOTER_SPEED_MED);
-    }
-    public void set_low(){
-        motors.set(SHOOTER_SPEED_LOW);
-    }
-    public void set_off(){
-        motors.set(0.);
+    public void medium() {
+        left_motor.setPower(SHOOTER_SPEED_MED);
+        right_motor.setPower(SHOOTER_SPEED_MED);
     }
 
-    public Command high(){
-        return new InstantCommand(this::set_high,this);
+    public void low() {
+      left_motor.setPower(SHOOTER_SPEED_LOW);
+      right_motor.setPower(SHOOTER_SPEED_LOW);
     }
 
-    public Command medium(){
-        return new InstantCommand(this::set_medium, this);
+    public void high() {
+        left_motor.setPower(SHOOTER_SPEED_HIGH);
+        right_motor.setPower(SHOOTER_SPEED_HIGH);
     }
-    public Command off(){
-        return new InstantCommand(this::set_off, this);
-    }
-    public Command low(){
-        return new InstantCommand(this::set_low, this);
+
+    public void stop() {
+        left_motor.setPower(0.);
+        right_motor.setPower(0.);
     }
 
     public double getSpeed() {
-        return motors.getVelocity();
+        return left_motor.getVelocity();
     }
 
-    public void set_kickeron() {
-        kicker.set(KICKER_SPEED_ON);
+    public void kickeron() {
+        kicker.setPower(1.0);
     }
-    public void set_kickerout() {
-        kicker.set(KICKER_SPEED_OUT);
+    public void kickerout() {
+        kicker.setPower(-1.0);
     }
-    public void set_kickeroff() {
-        kicker.set(0.);
+    public void kickeroff() {
+        kicker.setPower(0.);
     }
 
-    public Command kickeron(){
-        return new InstantCommand(this::set_kickeron, this);
-    }
-    public Command kickeroff(){
-        return new InstantCommand(this::set_kickeroff, this);
-    }
-    public Command kickerout(){
-        return new InstantCommand(this::set_kickerout, this);
+    public void init(HardwareMap hMap) {
+        left_motor = hMap.get(DcMotorEx.class,left_name);
+        right_motor = hMap.get(DcMotorEx.class,right_name);
+        left_motor.setDirection(DcMotorSimple.Direction.FORWARD);
+        right_motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        left_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        right_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        kicker = hMap.get(DcMotorEx.class,kicker_name);
+        kicker.setDirection(DcMotorSimple.Direction.FORWARD);
+        kicker.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        kicker.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        stop();
+        kickeroff();
     }
 
 }

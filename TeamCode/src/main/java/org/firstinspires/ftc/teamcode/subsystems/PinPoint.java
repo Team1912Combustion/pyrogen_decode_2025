@@ -23,24 +23,29 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.seattlesolvers.solverslib.command.Command;
-import com.seattlesolvers.solverslib.command.InstantCommand;
-import com.seattlesolvers.solverslib.command.Subsystem;
-import com.seattlesolvers.solverslib.geometry.Pose2d;
-import com.seattlesolvers.solverslib.geometry.Rotation2d;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.utils.Pose2d;
+import org.firstinspires.ftc.teamcode.utils.Rotation2d;
 
-public class PinPoint implements Subsystem {
+public class PinPoint {
+    // Create an instance of the sensor
+    public static final PinPoint INSTANCE = new PinPoint();
 
-    private final String pinpoint_name = "pinpoint";
+    private PinPoint() { }
+
     GoBildaPinpointDriver pinpoint;
 
-    public PinPoint(final HardwareMap hardwareMap) {
-        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, pinpoint_name);
+    public void init(HardwareMap hMap) {
+        // Get a reference to the sensor
+        pinpoint = hMap.get(GoBildaPinpointDriver.class, "pinpoint");
+
+        // Configure the sensor
         configurePinpoint();
+
+        // Set the location of the robot - this should be the place you are starting the robot from
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
     }
 
@@ -61,7 +66,7 @@ public class PinPoint implements Subsystem {
     }
 
     public Pose2d getPose2d() {
-        update();
+        pinpoint.update();
         Pose2D newpose = pinpoint.getPosition();
         return new Pose2d(newpose.getX(DistanceUnit.INCH),
                           newpose.getY(DistanceUnit.INCH),
@@ -83,14 +88,6 @@ public class PinPoint implements Subsystem {
         return pose;
     }
 
-    public void update() {
-        pinpoint.update();
-    }
-
-    public Command run_update() {
-        return new InstantCommand(this::update, this);
-    }
-
     public void configurePinpoint(){
        /*
         *  Set the odometry pod positions relative to the point that you want the position to be measured from.
@@ -101,7 +98,7 @@ public class PinPoint implements Subsystem {
         *  The Y pod offset refers to how far forwards from the tracking point the Y (strafe) odometry pod is.
         *  Forward of center is a positive number, backwards is a negative number.
         */
-        pinpoint.setOffsets(9.0, -4.25, DistanceUnit.CM); //these are tuned for 3110-0002-0001 Product Insight #1
+        pinpoint.setOffsets(9, -4.25, DistanceUnit.CM); //these are tuned for 3110-0002-0001 Product Insight #1
 
         /*
          * Set the kind of pods used by your robot. If you're using goBILDA odometry pods, select either
@@ -130,5 +127,4 @@ public class PinPoint implements Subsystem {
          */
         pinpoint.resetPosAndIMU();
     }
-
 }

@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.pedropathing.util.Timer;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.seattlesolvers.solverslib.command.Subsystem;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -13,10 +13,11 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Vision implements Subsystem {
+public class Vision {
     public static final Vision INSTANCE = new Vision();
-
+    private Vision() { }
     private static final boolean USE_WEBCAM = true;
+
     private AprilTagProcessor aprilTag;
     private VisionPortal visionPortal;
 
@@ -27,39 +28,61 @@ public class Vision implements Subsystem {
     private int PPG_TAG_ID =  23;
     private int RED_TAG_ID =  24;
 
-    public TargetPose targetPose;
-    public int target_id = 0;
-
-    public class TargetPose {
+    public static class TargetPose {
         AprilTagPoseFtc pose;
         int id;
     }
 
+    public TargetPose targetPose;
+    public int target_id = 0;
+
+    public DcMotor ledBlue = null;
+    public DcMotor ledRed  = null;
+
     private List<Integer> ob_arr = new ArrayList<Integer>(3);
-    private Timer m_timer;
 
-    private Vision() { }
-
-    private void init(HardwareMap hardwareMap, ActiveOpMode opMode) {
-        I_AM_BLUE = opMode.i_am_blue();
-        m_timer = new Timer();
+    public void init(HardwareMap hMap) {
         targetPose = new TargetPose();
         targetPose.id = 0;
+
+        initAprilTag(hMap);
 
         // initialize ob_arr
         ob_arr.add(GPP_TAG_ID);
         ob_arr.add(PGP_TAG_ID);
         ob_arr.add(PPG_TAG_ID);
 
-        aprilTag = new AprilTagProcessor.Builder().build();
-        VisionPortal.Builder builder = new VisionPortal.Builder();
-        builder.setCamera(hardwareMap.get(WebcamName.class, "webcam"));
-        builder.addProcessor(aprilTag);
-        visionPortal = builder.build();
+        //ledRed =  hMap.get(DcMotor.class, "ledRed");
+        //ledBlue =  hMap.get(DcMotor.class, "ledBlue");
+        //ledRed.setPower(0.);
+        //ledBlue.setPower(0.);
     }
 
     public void setAlliance(boolean iAmBlue) {
         I_AM_BLUE = iAmBlue;
+        //ledOn();
+    }
+
+    public void ledOff() {
+        //ledBlue.setPower(0.);
+        //ledRed.setPower(0.);
+    }
+
+    public void ledOn() {
+        //if (I_AM_BLUE) {
+        //    ledBlue.setPower(1.);
+        //}
+        //else {
+        //    ledRed.setPower(1.);
+        //}
+    }
+
+    private void initAprilTag(HardwareMap hMap) {
+        aprilTag = new AprilTagProcessor.Builder().build();
+        VisionPortal.Builder builder = new VisionPortal.Builder();
+        builder.setCamera(hMap.get(WebcamName.class, "webcam"));
+        builder.addProcessor(aprilTag);
+        visionPortal = builder.build();
     }
 
     public void close() {
@@ -68,9 +91,9 @@ public class Vision implements Subsystem {
 
     public int myTimeWaitForTarget(double time) {
         int target_id = 0;
-        Timer timer = new Timer();
-        timer.resetTimer();
-        while (target_id == 0 & timer.getElapsedTimeSeconds() < time) {
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
+        while (target_id == 0 & timer.seconds() < time) {
             targetPose = getTargetPose();
             target_id = targetPose.id;
         }
@@ -79,8 +102,6 @@ public class Vision implements Subsystem {
 
     public int myWaitForTarget() {
         int target_id = 0;
-        Timer timer = new Timer();
-        timer.resetTimer();
         while (target_id == 0) {
             targetPose = getTargetPose();
             target_id = targetPose.id;
@@ -111,7 +132,7 @@ public class Vision implements Subsystem {
         for (AprilTagDetection detection : currentDetections) {
             if (detection.metadata != null) {
                 //if (detection.id == targetId) {
-                return detection.ftcPose.bearing - offset;
+                    return detection.ftcPose.bearing - offset;
                 //}
             }   // end for() loop
         }
