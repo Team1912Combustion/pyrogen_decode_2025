@@ -1,37 +1,38 @@
 package org.firstinspires.ftc.teamcode.subsystems;
-import com.rowanmcalpin.nextftc.core.Subsystem;
-import com.rowanmcalpin.nextftc.core.command.Command;
-import com.rowanmcalpin.nextftc.core.command.utility.InstantCommand;
-import com.rowanmcalpin.nextftc.core.control.controllers.PIDFController;
-import com.rowanmcalpin.nextftc.ftc.hardware.controllables.MotorEx;
-import com.rowanmcalpin.nextftc.ftc.hardware.controllables.RunToPosition;
-public class Intake extends Subsystem {
 
-    public static final Intake Instance = new Intake();
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
+public class Intake {
+    public static final Intake INSTANCE = new Intake();
     private Intake() { }
 
-    private MotorEx motor;
+    private String motor_name = "intake_motor";
+    public DcMotorEx intake_motor;
 
-    public PIDFController controller = new PIDFController(0.005,0.0,0.0);
+    private double INTAKE_OUT_POWER = 0.59;
+    private double INTAKE_IN_POWER = -0.80;
+    private double INTAKE_OFF_POWER = 0.0;
+    private double INTAKE_MIN_POWER = -0.2;
 
-    public Command resetZero()  {
-        return new InstantCommand(() -> { motor.resetEncoder(); });}
-    public String name = "Intake_Motor";
-
-    public Command toLow() {
-        return new RunToPosition(motor,0.0,controller,this);
-
+    public void intakein(){
+        intake_motor.setPower(INTAKE_IN_POWER);
     }
-    public Command toMiddle() {
-        return new RunToPosition(motor,0.0,controller,this);
+    public void intakeout(){
+        intake_motor.setPower(INTAKE_OUT_POWER);
     }
-    public Command toHigh() {
-        return new RunToPosition(motor,0.0,controller,this);
-    }
-    @Override
-    public void initialize() {
-        motor = new MotorEx(name);
+    public void intakeoff() {
+        double minSpeed = 0.;
+        if (Drive.INSTANCE.fwdSpeed > 0.1) {
+            minSpeed = INTAKE_MIN_POWER;
+        }
+        intake_motor.setPower(minSpeed);
     }
 
+    public void init(HardwareMap hMap) {
+        intake_motor = hMap.get(DcMotorEx.class, motor_name);
+
+        intake_motor.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
 }
