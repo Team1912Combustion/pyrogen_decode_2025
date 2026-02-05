@@ -243,18 +243,17 @@ public class AutoDrive {
         final double MAX_AUTO_STRAFE= 0.5;   //  Clip the strafing speed to this max value
         final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value
 
-        int target_id = Vision.INSTANCE.target_id;
         ElapsedTime m_timer = new ElapsedTime();
-        Vision.TargetPose targetPose = Vision.INSTANCE.targetPose;
+        LimeLight.TargetPose targetPose = LimeLight.INSTANCE.targetPose;
 
         m_timer.reset();
         while (m_timer.seconds() < timeout) {
-            targetPose = Vision.INSTANCE.getTargetPose();
+            targetPose = LimeLight.INSTANCE.getTargetPose();
             if (targetPose.id > 0) {
                 // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
-                double  rangeError      = (targetPose.pose.range - DESIRED_DISTANCE);
-                double  headingError    = targetPose.pose.bearing;
-                double  yawError        = targetPose.pose.yaw;
+                double  rangeError      = (targetPose.range - DESIRED_DISTANCE);
+                double  headingError    = targetPose.bearing;
+                double  yawError        = targetPose.yaw;
                 // Use the speed and turn "gains" to calculate how we want the robot to move.
                 double drive  = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
                 double turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;

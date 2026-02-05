@@ -74,7 +74,7 @@ public class Drive {
     public void autoAim() {
         final double TURN_GAIN   =  0.05  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
         final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
-        double headingError = Vision.INSTANCE.getTargetBearing();
+        double headingError = LimeLight.INSTANCE.getTargetBearing();
         double turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
         moveRobot(0.,0.,turn);
     }

@@ -16,8 +16,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.teamcode.utils.*;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,15 @@ public class LimeLight {
     private int PPG_TAG_ID =  23;
     private int RED_TAG_ID =  24;
 
+    public static class TargetPose {
+        public Pose3D pose;
+        public double range;
+        public double bearing;
+        public double yaw;
+        public int id;
+    }
+    public TargetPose targetPose;
+
     private final static boolean LEDS = false;
     public DcMotor ledBlue = null;
     public DcMotor ledRed = null;
@@ -46,6 +57,9 @@ public class LimeLight {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
         limelight.start();
+
+        targetPose = new TargetPose();
+        targetPose.id = 0;
 
         // initialize ob_arr
         ob_arr.add(GPP_TAG_ID);
@@ -76,6 +90,28 @@ public class LimeLight {
                 ledRed.setPower(1.);
             }
         }
+    }
+
+    public TargetPose getTargetPose() {
+        int targetId = I_AM_BLUE ? BLUE_TAG_ID : RED_TAG_ID;
+        TargetPose targetPose = new TargetPose();
+        targetPose.id = 0;
+        LLResult result = limelight.getLatestResult();
+        if (result.isValid()) {
+            List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
+            for (LLResultTypes.FiducialResult fr : fiducialResults) {
+                if (fr.getFiducialId() == targetId) {
+                    Pose3D pose = fr.getTargetPoseCameraSpace();
+                    targetPose.pose = pose;
+                    Position position = pose.getPosition();
+                    targetPose.range = Math.sqrt(position.x*position.x+position.y*position.y);
+                    targetPose.bearing = pose.getOrientation().getYaw();
+                    targetPose.yaw = fr.getRobotPoseTargetSpace().getOrientation().getYaw();
+                    targetPose.id = fr.getFiducialId();
+                }
+            }
+        }
+        return targetPose;
     }
 
     public int getObeliskTag() {
