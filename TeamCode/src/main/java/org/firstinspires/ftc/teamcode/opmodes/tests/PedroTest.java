@@ -1,15 +1,16 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes.tests;
 
-import org.firstinspires.ftc.teamcode.pedropathing.core.follower.Follower;
-import org.firstinspires.ftc.teamcode.pedropathing.core.geometry.BezierLine;
-import org.firstinspires.ftc.teamcode.pedropathing.core.geometry.Pose;
-import org.firstinspires.ftc.teamcode.pedropathing.core.paths.PathChain;
-import org.firstinspires.ftc.teamcode.pedropathing.core.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.pedropathing.impulse.Constants;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
+import com.pedropathing.geometry.BezierLine;
+import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.PathChain;
+import com.pedropathing.util.Timer;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import java.util.ArrayList;
 
