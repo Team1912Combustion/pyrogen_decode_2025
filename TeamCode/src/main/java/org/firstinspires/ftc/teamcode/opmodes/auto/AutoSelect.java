@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.ActiveOpMode;
 import org.firstinspires.ftc.teamcode.subsystems.AutoDrive;
+import org.firstinspires.ftc.teamcode.subsystems.LimeLight;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -34,13 +35,12 @@ public class AutoSelect extends LinearOpMode
         PinPoint.INSTANCE.init(hardwareMap);
         ActiveOpMode.INSTANCE.init(this);
         Shooter.INSTANCE.init(hardwareMap);
-        Lift.INSTANCE.init(hardwareMap);
         Intake.INSTANCE.init(hardwareMap);
         Odometry.INSTANCE.teleinit();
         AutoSettings.INSTANCE.readAutoConfig();
         Drive.INSTANCE.init(hardwareMap);
         AutoDrive.INSTANCE.init(telemetry, hardwareMap);
-        Vision.INSTANCE.setAlliance(AutoSettings.INSTANCE.iAmBlue());
+        LimeLight.INSTANCE.setAlliance(AutoSettings.INSTANCE.iAmBlue());
         telemetry.update();
         telemetry.addData(">", "hardware init complete.");
 
@@ -69,7 +69,7 @@ public class AutoSelect extends LinearOpMode
 
             if (booleanIncrementer != 0) {
                 AutoSettings.INSTANCE.saveAutoConfig();
-                Vision.INSTANCE.setAlliance(AutoSettings.INSTANCE.I_AM_BLUE);
+                LimeLight.INSTANCE.setAlliance(AutoSettings.INSTANCE.I_AM_BLUE);
                 //backdropPixel.update(autoSettings.iAmBlue());
                 //placePixel.update(autoSettings.iAmBlue());
                 //doubleVision.update(autoSettings.iAmBlue(), autoSettings.rightShift(), autoSettings.leftShift());
@@ -79,7 +79,7 @@ public class AutoSelect extends LinearOpMode
 
             telemetry.addData("Alliance Color (Dpad Up): ", myAlliance);
             telemetry.addData("Start Position (Dpad Left): ", myPosition);
-            telemetry.addData("Obelisk Tag ID: ", Vision.INSTANCE.getObeliskTag());
+            telemetry.addData("Obelisk Tag ID: ", LimeLight.INSTANCE.getObeliskTag());
             telemetry.addLine(" ");
 
             telemetry.addData(">", "Touch Play to start OpMode");

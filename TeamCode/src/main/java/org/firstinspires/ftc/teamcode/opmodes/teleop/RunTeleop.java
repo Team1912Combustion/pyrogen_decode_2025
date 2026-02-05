@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.opmodes.auto.AutoSettings;
+import org.firstinspires.ftc.teamcode.subsystems.LimeLight;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -19,7 +20,6 @@ public class RunTeleop extends OpMode {
     final private ElapsedTime teleopTimer = new ElapsedTime();
     final private ElapsedTime blinkTimer = new ElapsedTime();
     boolean endGameWarning = false;
-    boolean lift_press = false;
 
     @Override
     public void init() {
@@ -27,10 +27,9 @@ public class RunTeleop extends OpMode {
         telemetry.update();
         AutoSettings.INSTANCE.readAutoConfig();
         Drive.INSTANCE.init(hardwareMap);
-        Vision.INSTANCE.init(hardwareMap);
-        Vision.INSTANCE.setAlliance(AutoSettings.INSTANCE.iAmBlue());
+        LimeLight.INSTANCE.init(hardwareMap);
+        LimeLight.INSTANCE.setAlliance(AutoSettings.INSTANCE.iAmBlue());
         Shooter.INSTANCE.init(hardwareMap);
-        Lift.INSTANCE.init(hardwareMap);
         Intake.INSTANCE.init(hardwareMap);
         PinPoint.INSTANCE.init(hardwareMap);
         Odometry.INSTANCE.teleinit();
@@ -122,18 +121,16 @@ public class RunTeleop extends OpMode {
             telemetry.addLine("Shooter: Stop");
         }
 
-        // LIFT CODE
         if (kickerOnButton) {
             Shooter.INSTANCE.kickeron();
-            telemetry.addLine("Lift: Tip");
+            telemetry.addLine("Kicker: In");
         } else if (kickerBackButton) {
             Shooter.INSTANCE.kickerout();
-            telemetry.addLine("Lift: Stow");
+            telemetry.addLine("Kicker: Out");
         } else {
             Shooter.INSTANCE.kickeroff();
-            telemetry.addLine("Lift: Off");
+            telemetry.addLine("Kicker: Off");
         }
-        telemetry.addData("Lift: position:",Lift.INSTANCE.getPosition());
 
         if (gamepad1.left_bumper) {
             Drive.INSTANCE.autoAim();

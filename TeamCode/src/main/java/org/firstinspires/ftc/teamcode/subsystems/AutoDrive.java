@@ -17,7 +17,7 @@ public class AutoDrive {
     private AutoDrive() { }
 
     HardwareMap hMap = null;
-    Vision vision = null;
+    LimeLight limeLight = null;
     Drive driveSys = null;
     Telemetry telemetry = null;
     ActiveOpMode opMode = null;
@@ -46,11 +46,11 @@ public class AutoDrive {
         hMap = hardwareMap;
 
         odometry = Odometry.INSTANCE;
-        vision = Vision.INSTANCE;
+        limeLight = LimeLight.INSTANCE;
         driveSys = Drive.INSTANCE;
         driveSys.init(hMap);
         driveSys.stop();
-        vision.init(hMap);
+        limeLight.init(hMap);
 
         odometry.update();
         cur_pose = odometry.getPose2d();
