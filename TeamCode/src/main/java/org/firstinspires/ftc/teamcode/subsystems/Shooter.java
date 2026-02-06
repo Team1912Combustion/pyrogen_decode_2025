@@ -21,8 +21,8 @@ public class Shooter {
 
     private static double POWER_TO_LAUNCH = -.35;
     private static double SHOOTER_SPEED_LOW = .2;
-    private static double SHOOTER_SPEED_MED = .45;
-    private static double SHOOTER_SPEED_HIGH = .5;
+    private static double SHOOTER_SPEED_MED = .40;
+    private static double SHOOTER_SPEED_HIGH = .50;
     private static double POWER_TO_BACK = -.25;
 
     public void back() {
@@ -47,6 +47,19 @@ public class Shooter {
     public void high() {
         left_motor.setPower(SHOOTER_SPEED_HIGH);
         right_motor.setPower(SHOOTER_SPEED_HIGH);
+        //bangbang(100);
+    }
+
+    void bangbang(double speed) {
+        double oldspeed = left_motor.getVelocity();
+        double power;
+        if (oldspeed < speed) {
+            power = 1.;
+        } else {
+            power = 0.;
+        }
+        left_motor.setPower(power);
+        right_motor.setPower(power);
     }
 
     public void stop() {

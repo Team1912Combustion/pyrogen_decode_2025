@@ -14,6 +14,7 @@ public class TestLimeLight extends OpMode {
         telemetry.addData(">", "Initializing hardware.");
         telemetry.update();
         LimeLight.INSTANCE.init(hardwareMap);
+        LimeLight.INSTANCE.setAlliance(true);
         telemetry.addData(">", "Initialization complete.");
         telemetry.update();
     }
@@ -39,12 +40,12 @@ public class TestLimeLight extends OpMode {
     public void loop() {
 
         LimeLight.TargetPose targetPose;
-        targetPose = LimeLight.INSTANCE.targetPose;
+        targetPose = LimeLight.INSTANCE.getTargetPose();
+        telemetry.addData("target id: ", targetPose.id);
         if (targetPose.id > 0) {
             double  rangeError      = (targetPose.range - 12.);
             double  headingError    = targetPose.bearing;
             double  yawError        = targetPose.yaw;
-        }
         telemetry.addData("targetPose: ","x/y/z: %5.2f / %5.2f / %5.2f",
                 targetPose.pose.getPosition().x,
                 targetPose.pose.getPosition().y,
@@ -55,6 +56,7 @@ public class TestLimeLight extends OpMode {
                 targetPose.pose.getOrientation().getRoll());
         telemetry.addData("to target: ","range/heading/yaw: %5.2f / %5.2f / %5.2f",
                 targetPose.range,targetPose.bearing,targetPose.yaw);
+        }
         telemetry.update();
     }
 }
