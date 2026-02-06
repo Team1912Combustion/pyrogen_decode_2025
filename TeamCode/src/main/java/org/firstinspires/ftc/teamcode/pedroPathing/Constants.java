@@ -38,21 +38,21 @@ public class Constants {
             .leftRearMotorName("left_back")
             .rightFrontMotorName("right_front")
             .rightRearMotorName("right_back")
-            .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .leftFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
+            .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .xVelocity(71.2)
             .yVelocity(30.8);
 
     public static PinpointConstants pinpointConstants =
             new PinpointConstants().hardwareMapName("pinpoint")
-                    .forwardPodY(-9)
-                    .strafePodX(-4)
+                    .forwardPodY(1)
+                    .strafePodX(10)
                     .distanceUnit(DistanceUnit.INCH)
                     .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
                     .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
-                    .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+                    .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
     public static ThreeWheelConstants localizerConstants =
             new ThreeWheelConstants()

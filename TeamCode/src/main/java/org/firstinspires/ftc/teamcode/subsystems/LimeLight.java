@@ -104,7 +104,8 @@ public class LimeLight {
                     Pose3D pose = fr.getTargetPoseCameraSpace();
                     targetPose.pose = pose;
                     Position position = pose.getPosition();
-                    targetPose.range = Math.sqrt(position.x*position.x+position.y*position.y);
+                    //targetPose.range = Math.sqrt(position.x*position.x+position.y*position.y);
+                    targetPose.range = position.z;
                     targetPose.bearing = pose.getOrientation().getYaw();
                     targetPose.yaw = fr.getRobotPoseTargetSpace().getOrientation().getYaw();
                     targetPose.id = fr.getFiducialId();
@@ -147,7 +148,7 @@ public class LimeLight {
         if (result.isValid()) {
             List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
             for (LLResultTypes.FiducialResult fr : fiducialResults) {
-                return fr.getTargetXDegrees() - offset;
+                return offset - fr.getTargetXDegrees() ;
             }
         }
         return 0.;

@@ -115,14 +115,17 @@ public class PedroTest extends OpMode {
 
             case 00:
                 mywait(200);
+                setPathState(10);
                 break;
             case 10:
                 follower.followPath(toRowOne);
                 setPathState(12);
                 break;
             case 12:
-                follower.followPath(pickupRowOne);
-                setPathState(14);
+                if (!follower.isBusy()) {
+                    follower.followPath(pickupRowOne);
+                    setPathState(14);
+                }
                 break;
             case 14:
                 if (!follower.isBusy()) {

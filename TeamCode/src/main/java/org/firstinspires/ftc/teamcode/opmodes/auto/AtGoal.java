@@ -17,48 +17,38 @@ public class AtGoal {
     public static void runTest() {
         ElapsedTime m_timer = new ElapsedTime();
         m_timer.reset();
-        Shooter.INSTANCE.launch();
-        m_timer.reset();
-        while (m_timer.milliseconds() < 200.) { }
-        Shooter.INSTANCE.launch();
-        m_timer.reset();
-        while (m_timer.milliseconds() < 200.) { }
-        Shooter.INSTANCE.stop();
-        m_timer.reset();
-        while (m_timer.milliseconds() < 1000.) { }
-        Shooter.INSTANCE.stop();
-        m_timer.reset();
-        while (m_timer.milliseconds() < 1000.) { }
-        AutoDrive.INSTANCE.sendTelemetry(false);
-        m_timer.reset();
-        while (m_timer.milliseconds() < 1000.) { }
-        AutoDrive.INSTANCE.driveStraight(0.2, 0.6, -52.5, 4.);
-        AutoDrive.INSTANCE.holdHeading(0.8, 0., 0.5);
-        if (AutoSettings.INSTANCE.iAmBlue()) {
-            AutoDrive.INSTANCE.turnAndHoldHeading(0.8, 43.5, 0.5);
-        } else {
-            AutoDrive.INSTANCE.turnAndHoldHeading(0.8, -43.5, 0.5);
-        }
+        while (m_timer.milliseconds() < 3000.) { }
+        AutoDrive.INSTANCE.driveStraight(0.2,0.6,-42,4);
         Intake.INSTANCE.intakein();
-        AutoDrive.INSTANCE.driveStraight(0.2, 0.27, 46.,4.8);
         m_timer.reset();
-        while (m_timer.milliseconds() < 200.) { }
-        Intake.INSTANCE.intakeoff();
-        if (AutoSettings.INSTANCE.iAmBlue()) {
-            AutoDrive.INSTANCE.turnAndHoldHeading(0.8, 5, 0.5);
-            AutoDrive.INSTANCE.strafeStraight(0.2, 0.6, -29, 3);
-        } else {
-            AutoDrive.INSTANCE.turnAndHoldHeading(0.8, -5, 0.5);
-            AutoDrive.INSTANCE.strafeStraight(0.2, 0.6, 29, 3);
-        }
-        AutoDrive.INSTANCE.driveStraight(0.2, 0.6, 25,2.5);
-        Shooter.INSTANCE.launch();
+        while (m_timer.milliseconds() < 2000.) { }
+        Shooter.INSTANCE.kickeron();
+        Shooter.INSTANCE.high();
         m_timer.reset();
-        while (m_timer.milliseconds() < 200.) { }
-        Shooter.INSTANCE.launch();
-        m_timer.reset();
-        while (m_timer.milliseconds() < 200.) { }
+        while (m_timer.milliseconds() < 2000.) { }
+        Shooter.INSTANCE.kickeroff();
         Shooter.INSTANCE.stop();
+        AutoDrive.INSTANCE.turnAndHoldHeading(1.,-135.,0.5);
+        m_timer.reset();
+        AutoDrive.INSTANCE.driveStraight(0.2,0.6,-34,4);
+        while (m_timer.milliseconds() < 2000.) { }
+        //AutoDrive.INSTANCE.strafeStraight(0.2,0.6,-90,4);
+        m_timer.reset();
+        while (m_timer.milliseconds() < 2000. ) { }
+        AutoDrive.INSTANCE.driveStraight(0.2,0.6,36,4);
+        m_timer.reset();
+        while (m_timer.milliseconds() < 2000.) { }
+        AutoDrive.INSTANCE.turnAndHoldHeading(1.,0.,0.5);
+        //AutoDrive.INSTANCE.strafeStraight(0.2,0.6,90,4);
+        m_timer.reset();
+        while (m_timer.milliseconds() < 2000.) { }
+        Shooter.INSTANCE.kickeron();
+        Shooter.INSTANCE.high();
+        m_timer.reset();
+
+
+
+
 
 
     }
