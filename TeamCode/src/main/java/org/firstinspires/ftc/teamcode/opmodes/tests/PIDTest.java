@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
  */
 @Autonomous
 public class PIDTest extends LinearOpMode {
-    public static double TARGET_RPM = 0.;
+    public static double TARGET_RPM = 2000.;
     public static int TICKS_PER_REV = 28;
     public static int MAX_RPM = 5000;
     public static int RPM_INC = 100;
