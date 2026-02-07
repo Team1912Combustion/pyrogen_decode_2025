@@ -28,7 +28,11 @@ public class AtGoal {
         while (m_timer.milliseconds() < 2000.) { }
         Shooter.INSTANCE.kickeroff();
         Shooter.INSTANCE.stop();
-        AutoDrive.INSTANCE.turnAndHoldHeading(1.,-135.,0.5);
+        if (AutoSettings.INSTANCE.iAmBlue()) {
+            AutoDrive.INSTANCE.turnAndHoldHeading(1., -135., 0.5);
+        } else {
+            AutoDrive.INSTANCE.turnAndHoldHeading(1., 135., 0.5);
+        }
         m_timer.reset();
         AutoDrive.INSTANCE.driveStraight(0.2,0.6,-34,4);
         while (m_timer.milliseconds() < 2000.) { }
@@ -38,7 +42,7 @@ public class AtGoal {
         AutoDrive.INSTANCE.driveStraight(0.2,0.6,36,4);
         m_timer.reset();
         while (m_timer.milliseconds() < 2000.) { }
-        AutoDrive.INSTANCE.turnAndHoldHeading(1.,0.,0.5);
+        AutoDrive.INSTANCE.turnAndHoldHeading(1., 0., 0.5);
         //AutoDrive.INSTANCE.strafeStraight(0.2,0.6,90,4);
         m_timer.reset();
         while (m_timer.milliseconds() < 2000.) { }
