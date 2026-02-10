@@ -21,7 +21,7 @@ public class Shooter {
 
 
     public static int TICKS_PER_REV = 28;
-    static double TARGET_RPM_HIGH = 3000.;
+    static double TARGET_RPM_HIGH = 3025.;
     static double TARGET_RPM_MED = 2500.;
     static double TARGET_RPM_LOW = 2000.;
     public static double VEL_SCALE = 1.;

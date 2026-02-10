@@ -17,11 +17,13 @@ public class AtWall {
 
     public static void runTest() {
         ElapsedTime m_timer = new ElapsedTime();
+        m_timer.reset();
+        while (m_timer.milliseconds() < 1000.) { }
         AutoDrive.INSTANCE.driveStraight(0.2, 0.6, 1., 1.);
         if (AutoSettings.INSTANCE.iAmBlue()) {
-            AutoDrive.INSTANCE.turnAndHoldHeading(1., 20., 0.5);
+            AutoDrive.INSTANCE.turnAndHoldHeading(1., 22., 0.5);
         } else{
-            AutoDrive.INSTANCE.turnAndHoldHeading(1., -20., 0.5);
+            AutoDrive.INSTANCE.turnAndHoldHeading(1., -22., 0.5);
         }
         Shooter.INSTANCE.high();
         m_timer.reset();
@@ -33,8 +35,7 @@ public class AtWall {
         Shooter.INSTANCE.stop();
         Intake.INSTANCE.intakeoff();
         Shooter.INSTANCE.kickeroff();
-        m_timer.reset();
-        while (m_timer.seconds() < 11.) { }
+
         AutoDrive.INSTANCE.turnAndHoldHeading(1., 0., 0.5);
         AutoDrive.INSTANCE.driveStraight(0.2, 0.6, 18., 4.);
 
