@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.tests;
 
+import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.gamepad.PanelsGamepad;
+import com.bylazar.graph.GraphManager;
+import com.bylazar.graph.PanelsGraph;
 import com.qualcomm.hardware.motors.GoBILDA5201Series;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -8,12 +12,19 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
+import com.bylazar.panels.Panels;
+import com.bylazar.configurables.annotations.Configurable;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /*
  * Sine wave sample to demonstrate telemetry and config variables in action. Adjust the amplitude,
  * phase, and frequency of the oscillation and watch the changes propagate immediately to the graph.
  */
 @Autonomous
+@Configurable
 public class PIDTest extends LinearOpMode {
     public static double TARGET_RPM = 3000.;
     public static int TICKS_PER_REV = 28;
@@ -33,6 +44,9 @@ public class PIDTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+        GraphManager graphManager = PanelsGraph.INSTANCE.getManager();
+
         left_motor = (DcMotorEx)hardwareMap.get(DcMotor.class, left_name);
         right_motor = (DcMotorEx)hardwareMap.get(DcMotor.class, right_name);
         left_motor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -51,6 +65,7 @@ public class PIDTest extends LinearOpMode {
         telemetry.addData("RIGHT PID", pidfNew);
         telemetry.update();
 
+
         waitForStart();
 
         if (isStopRequested()) {
@@ -59,6 +74,9 @@ public class PIDTest extends LinearOpMode {
 
 
         while (opModeIsActive()) {
+            pidfNew = new PIDFCoefficients(PID_P,PID_I,PID_D,PID_F);
+            left_motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,pidfNew);
+            right_motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,pidfNew);
 
             double target_vel = TARGET_RPM * TICKS_PER_REV * VEL_SCALE / 60;
             left_motor.setVelocity(target_vel);
@@ -74,6 +92,14 @@ public class PIDTest extends LinearOpMode {
             telemetry.addData("LEFT POWER", left_motor.getPower());
             telemetry.addData("RIGHT POWER", right_motor.getPower());
             telemetry.update();
+
+            graphManager.addData("LEFTRPM",left_rpm);
+            graphManager.addData("RIGHTRPM",right_rpm);
+            graphManager.update();
+
+            panelsTelemetry.addData("LEFTRPM",left_rpm);
+            panelsTelemetry.addData("RIGHTRPM",right_rpm);
+            panelsTelemetry.update(telemetry);
 
             sleep(20);
         }
