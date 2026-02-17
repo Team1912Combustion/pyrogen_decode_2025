@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Vision;
 
 import java.util.ArrayList;
 
-@Autonomous(name="AutoSelect", group="Robot", preselectTeleOp = "PyroTeleArcade")
+/*@Autonomous(name="AutoSelect", group="Robot", preselectTeleOp = "PyroTeleArcade")
 public class AutoSelect extends LinearOpMode
 {
 
@@ -53,7 +53,10 @@ public class AutoSelect extends LinearOpMode
 
         while (!isStarted()) {
             String myAlliance   = AutoSettings.INSTANCE.iAmBlue() ? "Blue" : "Red";
-            String myPosition   = AutoSettings.INSTANCE.atGoal() ? "AtGoal" : "AtWall";
+            //String myPosition   = AutoSettings.INSTANCE.atGoal() ? "AtGoal" : "AtWall";
+            String myPosition   = AutoSettings.INSTANCE.pedroGoal() ? "AtGoal" : "AtWall";
+
+
 
 
             boolean g1xPressed = ifPressed(gamepad1.x);
@@ -64,7 +67,10 @@ public class AutoSelect extends LinearOpMode
             boolean g1backPressed = ifPressed(gamepad1.back);
 
             if (g1dpuPressed) { AutoSettings.INSTANCE.I_AM_BLUE = !AutoSettings.INSTANCE.I_AM_BLUE; }
-            if (g1dplPressed) { AutoSettings.INSTANCE.AT_GOAL = !AutoSettings.INSTANCE.AT_GOAL; }
+            if (g1dplPressed) { AutoSettings.INSTANCE.PEDRO_GOAL = !AutoSettings.INSTANCE.PEDRO_GOAL; }
+            //if (g1dplPressed) { AutoSettings.INSTANCE.AT_GOAL = !AutoSettings.INSTANCE.AT_GOAL; }
+
+
             // if (g1dplPressed) { incTurnPos(); }
 
             if (booleanIncrementer != 0) {
@@ -128,7 +134,7 @@ public class AutoSelect extends LinearOpMode
     }
      */
 
-    private boolean ifPressed(boolean button) {
+    /*private boolean ifPressed(boolean button) {
         boolean output = false;
         boolean buttonWas;
         if (buttonArray.size() == booleanIncrementer) {
@@ -144,3 +150,4 @@ public class AutoSelect extends LinearOpMode
     }
 
 }
+*/

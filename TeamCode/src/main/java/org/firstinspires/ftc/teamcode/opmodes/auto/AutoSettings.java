@@ -17,6 +17,9 @@ public class AutoSettings {
 
     public boolean I_AM_BLUE = false;
     public boolean AT_GOAL = true;
+    public boolean PEDRO_GOAL = true;
+    public boolean SHOOT_LAST = false;
+    public int ROW_COUNT = 1;
     /*
     public boolean GO_PIXEL = true;
     public boolean GO_BACKDROP = true;
@@ -29,6 +32,10 @@ public class AutoSettings {
 
     public boolean iAmBlue() { return I_AM_BLUE; }
     public boolean atGoal() { return AT_GOAL; }
+    public boolean pedroGoal() { return PEDRO_GOAL; }
+    public int rowcount() { return ROW_COUNT;}
+    public boolean shootlast() {return SHOOT_LAST;}
+
     /*
     public boolean goBackDrop() { return GO_BACKDROP; }
     public boolean goPark() { return GO_PARK; }
@@ -41,6 +48,10 @@ public class AutoSettings {
     public void pushToAutoConfig () {
         myAutoConfig.I_AM_BLUE = I_AM_BLUE;
         myAutoConfig.AT_GOAL = AT_GOAL;
+        myAutoConfig.PEDRO_GOAL = PEDRO_GOAL;
+        myAutoConfig.ROW_COUNT = ROW_COUNT;
+
+
         /*
         myAutoConfig.GO_BACKDROP = GO_BACKDROP;
         myAutoConfig.GO_PARK = GO_PARK;
@@ -54,6 +65,8 @@ public class AutoSettings {
     public void pullFromAutoConfig () {
         I_AM_BLUE     = myAutoConfig.I_AM_BLUE;
         AT_GOAL       = myAutoConfig.AT_GOAL;
+        PEDRO_GOAL    = myAutoConfig.PEDRO_GOAL;
+        ROW_COUNT     = myAutoConfig.ROW_COUNT;
         /*
         GO_BACKDROP   = myAutoConfig.GO_BACKDROP;
         GO_PARK       = myAutoConfig.GO_PARK;
@@ -66,6 +79,9 @@ public class AutoSettings {
     public void copyToAutoConfig(AutoConfig tmpAutoConfig) {
         myAutoConfig.I_AM_BLUE     = tmpAutoConfig.I_AM_BLUE;
         myAutoConfig.AT_GOAL       = tmpAutoConfig.AT_GOAL;
+        myAutoConfig.PEDRO_GOAL    = tmpAutoConfig.PEDRO_GOAL;
+        myAutoConfig.ROW_COUNT     = tmpAutoConfig.ROW_COUNT;
+        myAutoConfig.SHOOT_LAST    = tmpAutoConfig.SHOOT_LAST;
         /*
         myAutoConfig.GO_BACKDROP   = tmpAutoConfig.GO_BACKDROP;
         myAutoConfig.GO_PARK       = tmpAutoConfig.GO_PARK;
@@ -96,6 +112,9 @@ class AutoConfig implements Cloneable
 {
     public boolean I_AM_BLUE = true;
     public boolean AT_GOAL = true;
+    public boolean PEDRO_GOAL = true;
+    public int ROW_COUNT = 1;
+    public boolean  SHOOT_LAST = false ;
     /*
     public boolean GO_BACKDROP = true;
     public boolean GO_PARK = true;
