@@ -9,10 +9,8 @@ import org.firstinspires.ftc.teamcode.subsystems.LimeLight;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.Odometry;
 import org.firstinspires.ftc.teamcode.subsystems.PinPoint;
-import org.firstinspires.ftc.teamcode.subsystems.Vision;
 
 @TeleOp(name = "Teleop")
 public class RunTeleop extends OpMode {

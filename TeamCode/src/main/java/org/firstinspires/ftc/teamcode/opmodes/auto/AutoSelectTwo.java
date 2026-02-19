@@ -6,16 +6,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.ActiveOpMode;
 import org.firstinspires.ftc.teamcode.subsystems.LimeLight;
-import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Odometry;
 import org.firstinspires.ftc.teamcode.subsystems.PinPoint;
-import org.firstinspires.ftc.teamcode.subsystems.Vision;
 
 import java.util.ArrayList;
 
-@Autonomous(name="AutoSelect", preselectTeleOp = "runTeleop")
+@Autonomous(name="AutoSelectTwo", preselectTeleOp = "runTeleop")
 
 public class AutoSelectTwo extends LinearOpMode
 {
@@ -55,14 +53,15 @@ public class AutoSelectTwo extends LinearOpMode
             boolean g1dpuPressed = ifPressed(gamepad1.dpad_up);
             boolean g1dplPressed = ifPressed(gamepad1.dpad_left);
             boolean g1dprPressed = ifPressed(gamepad1.dpad_right);
-            boolean g1backPresed = ifPressed(gamepad1.back);
+            boolean g1backPressed = ifPressed(gamepad1.back);
 
             if (g1dpuPressed) {
                 AutoSettings.INSTANCE.I_AM_BLUE = !AutoSettings.INSTANCE.I_AM_BLUE;
+            }
                 if (g1dplPressed) {
                     AutoSettings.INSTANCE.PEDRO_GOAL = !AutoSettings.INSTANCE.PEDRO_GOAL;
                 }
-                if (g1dplPressed) {
+                if (g1dprPressed) {
                     AutoSettings.INSTANCE.ROW_COUNT = (AutoSettings.INSTANCE.ROW_COUNT + 1) % 4;
                 }
 
@@ -85,9 +84,8 @@ public class AutoSelectTwo extends LinearOpMode
                 telemetry.addData(">", "Touch Play to start OpMode");
                 telemetry.update();
                 sleep(20);
-
-
             }
+
             timer.reset();
 
             if (AutoSettings.INSTANCE.pedroGoal()) {
@@ -109,9 +107,6 @@ public class AutoSelectTwo extends LinearOpMode
             telemetry.update();
         }
 
-
-
-
         private  boolean ifPressed(boolean button) {
             boolean output = false;
             boolean buttonWas;
@@ -127,12 +122,7 @@ public class AutoSelectTwo extends LinearOpMode
             return output;
 
         }
-    }
-
-
-
-
-
-
-
 }
+
+
+

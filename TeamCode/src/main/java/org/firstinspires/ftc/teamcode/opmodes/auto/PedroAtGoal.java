@@ -6,7 +6,6 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -16,8 +15,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ActiveOpMode;
 //import org.firstinspires.ftc.teamcode.subsystems.Catapult;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Vision;
-import org.firstinspires.ftc.teamcode.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.LimeLight;
 
 
 import java.util.ArrayList;
@@ -56,23 +54,27 @@ public class PedroAtGoal {
         Pose rowOneStart = null;
         Pose rowOneDone = null;
         Pose rowTwoStart = null;
-        Pose rowTwoGrab = null;
+        Pose grabRowTwo = null;
         Pose rowTwoDone = null;
         Pose rowThreeStart = null;
+        Pose grabRowThree = null;
         Pose rowThreeDone = null;
         Pose parkPose = null;
         Pose shootingPosition = null;
+        Pose grabRowOne = null;
 
         // Poses
         if (I_AM_BLUE) {
-            shootingPosition = new Pose(21.060329067641682, 121.88665447897624, Math.toRadians(135));
-            rowOneStart = new Pose(58.895795246800745, 84.17550274223034, Math.toRadians(0));
-            rowOneDone = new Pose(21.060329067641682,121.88665447897624, Math.toRadians(135));
-            rowTwoStart = new Pose(58.76782449725776, 84.13162705667276, Math.toRadians(135));
-            rowTwoGrab = new Pose(58.91956124314444, 60.81718464351006, Math.toRadians(0));
-            rowThreeStart = new Pose(-33.2, 24, Math.toRadians(90));
-            rowThreeDone = new Pose(-33.2 , 60.5, Math.toRadians(90));
-            parkPose = new Pose(54, 24, Math.toRadians(45));
+            shootingPosition = new Pose(58.89, 83.64, Math.toRadians(135));
+            rowOneStart = new Pose(11.23, 83.77, Math.toRadians(0));
+            grabRowOne = new Pose(12.80,83.64,Math.toRadians(0));
+            rowOneDone = new Pose(58.89,83.64, Math.toRadians(135));
+            rowTwoStart = new Pose(38.43, 60.02, Math.toRadians(135));
+            grabRowTwo = new Pose(13.94, 59.41, Math.toRadians(0));
+            rowThreeStart = new Pose(42.04, 35.83, Math.toRadians(0));
+            grabRowThree = new Pose (12.41,35.10,Math.toRadians(0));
+            rowThreeDone = new Pose(58.89 , 83.64, Math.toRadians(135));
+            parkPose = new Pose(38.69, 33.43, Math.toRadians(90));
         } else {
             shootingPosition = new Pose(56, -50, Math.toRadians(-135));
             rowOneStart = new Pose(17.2, -24, Math.toRadians(-90));
@@ -95,8 +97,8 @@ public class PedroAtGoal {
                 .build();
 
         pickupRowOne = follower.pathBuilder()
-                .addPath(new BezierLine(rowOneStart, rowOneDone))
-                .setLinearHeadingInterpolation(rowOneStart.getHeading(), rowOneDone.getHeading())
+                .addPath(new BezierLine(rowOneStart, grabRowOne))
+                .setLinearHeadingInterpolation(rowOneStart.getHeading(), grabRowOne.getHeading())
                 .build();
 
         scoreRowOne = follower.pathBuilder()
@@ -110,14 +112,14 @@ public class PedroAtGoal {
                 .build();
 
         pickupRowTwo = follower.pathBuilder()
-                .addPath(new BezierLine(rowTwoStart, rowTwoDone))
-                .setLinearHeadingInterpolation(rowTwoStart.getHeading(), rowTwoDone.getHeading())
+                .addPath(new BezierLine(rowTwoStart, grabRowTwo))
+                .setLinearHeadingInterpolation(rowTwoStart.getHeading(), grabRowTwo.getHeading())
                 .setVelocityConstraint(0.5)
                 .build();
 
         scoreRowTwo = follower.pathBuilder()
-                .addPath(new BezierCurve(rowTwoDone, rowOneStart, shootingPosition))
-                .setLinearHeadingInterpolation(rowTwoDone.getHeading(), shootingPosition.getHeading())
+                .addPath(new BezierLine(grabRowTwo, shootingPosition))
+                .setLinearHeadingInterpolation(grabRowTwo.getHeading(), shootingPosition.getHeading())
                 .build();
 
         toRowThree = follower.pathBuilder()
@@ -126,12 +128,12 @@ public class PedroAtGoal {
                 .build();
 
         pickupRowThree = follower.pathBuilder()
-                .addPath(new BezierLine(rowThreeStart, rowThreeDone))
-                .setLinearHeadingInterpolation(rowThreeStart.getHeading(), rowThreeDone.getHeading())
+                .addPath(new BezierLine(rowThreeStart, grabRowThree))
+                .setLinearHeadingInterpolation(rowThreeStart.getHeading(), grabRowThree.getHeading())
                 .build();
 
         scoreRowThree = follower.pathBuilder()
-                .addPath(new BezierCurve(rowThreeDone, rowTwoStart, shootingPosition))
+                .addPath(new BezierLine(rowThreeDone, shootingPosition))
                 .setLinearHeadingInterpolation(rowThreeDone.getHeading(), shootingPosition.getHeading())
                 .build();
 
@@ -360,13 +362,13 @@ public class PedroAtGoal {
         Drive.INSTANCE.init(hardwareMap);
         //Catapult.INSTANCE.init(hardwareMap);
         Intake.INSTANCE.init(hardwareMap);
-        Vision.INSTANCE.setAlliance(AutoSettings.INSTANCE.iAmBlue());
+        LimeLight.INSTANCE.setAlliance(AutoSettings.INSTANCE.iAmBlue());
 
         telemetry.update();
         telemetry.addData(">", "hardware init complete.");
         follower = Constants.createFollower(hardwareMap);
         if (I_AM_BLUE) {
-            startPose = new Pose(56, 56, Math.toRadians(45));
+            startPose = new Pose(21.2, 121.9, Math.toRadians(135));
         } else {
             startPose = new Pose(56, -56, Math.toRadians(-45));
         }
