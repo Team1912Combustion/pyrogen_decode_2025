@@ -89,7 +89,7 @@ public class Shooter {
     }
 
     public void kickeron() {
-        kicker.setPower(1.0);
+        kicker.setPower(1.5);
     }
     public void kickerout() {
         kicker.setPower(-1.0);

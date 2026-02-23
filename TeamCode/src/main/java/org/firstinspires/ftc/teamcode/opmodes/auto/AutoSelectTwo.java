@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Odometry;
 import org.firstinspires.ftc.teamcode.subsystems.PinPoint;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 import java.util.ArrayList;
 
@@ -35,6 +36,8 @@ public class AutoSelectTwo extends LinearOpMode
         LimeLight.INSTANCE.setAlliance(AutoSettings.INSTANCE.iAmBlue());
         Intake.INSTANCE.init(hardwareMap);
         PinPoint.INSTANCE.init(hardwareMap);
+        Shooter.INSTANCE.init(hardwareMap);
+        Intake.INSTANCE.init(hardwareMap);
         Odometry.INSTANCE.teleinit();
         telemetry.update();
         telemetry.addData(">","hardware init complete.");
@@ -58,12 +61,12 @@ public class AutoSelectTwo extends LinearOpMode
             if (g1dpuPressed) {
                 AutoSettings.INSTANCE.I_AM_BLUE = !AutoSettings.INSTANCE.I_AM_BLUE;
             }
-                if (g1dplPressed) {
-                    AutoSettings.INSTANCE.PEDRO_GOAL = !AutoSettings.INSTANCE.PEDRO_GOAL;
-                }
-                if (g1dprPressed) {
-                    AutoSettings.INSTANCE.ROW_COUNT = (AutoSettings.INSTANCE.ROW_COUNT + 1) % 4;
-                }
+            if (g1dplPressed) {
+                AutoSettings.INSTANCE.PEDRO_GOAL = !AutoSettings.INSTANCE.PEDRO_GOAL;
+            }
+            if (g1dprPressed) {
+                AutoSettings.INSTANCE.ROW_COUNT = (AutoSettings.INSTANCE.ROW_COUNT + 1) % 4;
+            }
 
                 String myAlliance = AutoSettings.INSTANCE.iAmBlue() ? "Blue" : "Red";
                 String myPosition = AutoSettings.INSTANCE.pedroGoal() ? "AtGoal" : "AtWall";

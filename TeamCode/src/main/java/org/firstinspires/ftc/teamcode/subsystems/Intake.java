@@ -12,9 +12,9 @@ public class Intake {
     public DcMotorEx intake_motor;
 
     private double INTAKE_OUT_POWER = 0.59;
-    private double INTAKE_IN_POWER = -0.82;
+    private double INTAKE_IN_POWER = -0.9;
     private double INTAKE_OFF_POWER = 0.0;
-    private double INTAKE_MIN_POWER = -0.2;
+    private double INTAKE_MIN_POWER = -0.4;
 
     public void intakein(){
         intake_motor.setPower(INTAKE_IN_POWER);

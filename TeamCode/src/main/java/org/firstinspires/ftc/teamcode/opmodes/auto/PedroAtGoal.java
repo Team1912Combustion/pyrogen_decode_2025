@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.ActiveOpMode;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 //import org.firstinspires.ftc.teamcode.subsystems.Catapult;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -39,9 +40,10 @@ public class PedroAtGoal {
     private static PathChain scoreRowThree;
     private static PathChain park;
 
-    private static PathChain toLaunch;
+    private static PathChain toShoot;
 
     private static ElapsedTime waittimer = new ElapsedTime();
+    private static ElapsedTime shottimer = new ElapsedTime();
 
     ArrayList<Boolean> buttonArray = new ArrayList<>();
     int booleanIncrementer = 0;
@@ -65,8 +67,8 @@ public class PedroAtGoal {
 
         // Poses
         if (I_AM_BLUE) {
-            shootingPosition = new Pose(58.89, 83.64, Math.toRadians(135));
-            rowOneStart = new Pose(11.23, 83.77, Math.toRadians(0));
+            shootingPosition = new Pose(58., 83., Math.toRadians(135));
+            rowOneStart = new Pose(58.59, 83.64, Math.toRadians(0));
             grabRowOne = new Pose(12.80,83.64,Math.toRadians(0));
             rowOneDone = new Pose(58.89,83.64, Math.toRadians(135));
             rowTwoStart = new Pose(38.43, 60.02, Math.toRadians(135));
@@ -78,6 +80,7 @@ public class PedroAtGoal {
         } else {
             shootingPosition = new Pose(56, -50, Math.toRadians(-135));
             rowOneStart = new Pose(17.2, -24, Math.toRadians(-90));
+            grabRowOne = new Pose(144-12.80,83.64,Math.toRadians(0));
             rowOneDone = new Pose(17.2, -58, Math.toRadians(-90));
             rowTwoStart = new Pose(-5, -24, Math.toRadians(-90));
             rowTwoDone = new Pose(-5, -58, Math.toRadians(-90));
@@ -86,7 +89,7 @@ public class PedroAtGoal {
             parkPose = new Pose(54, -24, Math.toRadians(90));
         }
 
-        toLaunch = follower.pathBuilder()
+        toShoot = follower.pathBuilder()
                 .addPath(new BezierLine(startPose, shootingPosition))
                 .setLinearHeadingInterpolation(startPose.getHeading(), shootingPosition.getHeading())
                 .build();
@@ -102,7 +105,7 @@ public class PedroAtGoal {
                 .build();
 
         scoreRowOne = follower.pathBuilder()
-                .addPath(new BezierLine(rowOneDone, shootingPosition))
+                .addPath(new BezierLine(grabRowOne, shootingPosition))
                 .setLinearHeadingInterpolation(rowOneDone.getHeading(), shootingPosition.getHeading())
                 .build();
 
@@ -133,8 +136,8 @@ public class PedroAtGoal {
                 .build();
 
         scoreRowThree = follower.pathBuilder()
-                .addPath(new BezierLine(rowThreeDone, shootingPosition))
-                .setLinearHeadingInterpolation(rowThreeDone.getHeading(), shootingPosition.getHeading())
+                .addPath(new BezierLine(grabRowThree, shootingPosition))
+                .setLinearHeadingInterpolation(grabRowThree.getHeading(), shootingPosition.getHeading())
                 .build();
 
         park = follower.pathBuilder()
@@ -148,53 +151,72 @@ public class PedroAtGoal {
         switch (pathState) {
 
             case 0:
-                follower.followPath(toLaunch);
-                if (rowCount == 1) {
-                    mywait(2500);
-                }
+                follower.followPath(toShoot);
                 setPathState(1);
                 break;
-            // preload
             case 1:
-                if (!follower.isBusy()) {
-                    mywait(100);
-                    //Catapult.INSTANCE.load();
-                    mywait(200);
-                    //Catapult.INSTANCE.launch();
-                    mywait(100);
-                    Intake.INSTANCE.intakein();
-                    mywait(100);
-                    //Catapult.INSTANCE.load();
-                    mywait(220);
-                    //Catapult.INSTANCE.launch();
-                    mywait(500);
-                    //Catapult.INSTANCE.load();
-                    mywait(200);
-                    //Catapult.INSTANCE.hold();
-                    mywait(200);
-                    Intake.INSTANCE.intakeoff();
-                    if (rowCount > 0) {
-                        setPathState(10);
-                    } else {
-                        setPathState(90);
+                if (follower.isBusy()) {
+                    shottimer.reset();
+                } else {
+                    //mywait(100);
+                    if (shottimer.milliseconds() > 500.) {
+                        Shooter.INSTANCE.medium();
                     }
+                    if (shottimer.milliseconds() > 1500) {
+                        Shooter.INSTANCE.kickeron();
+                        Intake.INSTANCE.intakein();
+                    }
+                    if (shottimer.milliseconds() > 5500) {
+                        Shooter.INSTANCE.kickeroff();
+                        Shooter.INSTANCE.stop();
+                        Intake.INSTANCE.intakeoff();
+                        mywait(200);
+                        setPathState(2);
+                    }
+                }
+                break;
+            // preload
+            case 2:
+                follower.followPath(toRowOne);
+                if (rowCount > 0) {
+                    setPathState(3);
+                } else {
+                    setPathState(90);
+                }
+                break;
+            case 3:
+                if (!follower.isBusy()) {
+                    mywait(500);
+                    Intake.INSTANCE.intakein();
+                    setPathState(10);
                 }
                 break;
 
             // row 1
             case 10:
-                follower.followPath(toRowOne);
+                follower.followPath(pickupRowOne);
                 setPathState(11);
                 break;
             case 11:
                 if (!follower.isBusy()) {
-                    // turn on intake before driving;
-                    Intake.INSTANCE.intakein();
+                    follower.followPath(scoreRowOne);
                     setPathState(12);
                 }
                 break;
             case 12:
-                follower.followPath(pickupRowOne);
+                if (!follower.isBusy()) {
+                Shooter.INSTANCE.medium();
+                Shooter.INSTANCE.kickeron();
+                mywait(3000);
+                Shooter.INSTANCE.stop();
+                Shooter.INSTANCE.kickeroff();
+                Intake.INSTANCE.intakeoff();
+                    // turn on intake before driving;
+                    setPathState(121);
+                }
+                break;
+            case 121:
+                follower.followPath(toRowTwo);
                 setPathState(13);
                 break;
             case 13:
