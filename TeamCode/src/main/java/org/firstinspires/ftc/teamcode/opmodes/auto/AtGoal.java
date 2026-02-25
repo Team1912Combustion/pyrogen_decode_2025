@@ -5,6 +5,7 @@ import static java.lang.Thread.sleep;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.AutoDrive;
+import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
@@ -20,10 +21,12 @@ public class AtGoal {
         ElapsedTime m_timer = new ElapsedTime();
         m_timer.reset();
         while (m_timer.milliseconds() < 100.) { }
+
+        // back up to shooting position and shoot preloaded artifacts
         AutoDrive.INSTANCE.driveStraight(0.2,0.6,-50,4);
         Shooter.INSTANCE.medium();
         m_timer.reset();
-        while (m_timer.milliseconds() < 1500.) {Shooter.INSTANCE.run(); }
+        while (m_timer.milliseconds() < 1500.) {Shooter.INSTANCE.run(); Drive.INSTANCE.autoAim(); }
         Intake.INSTANCE.intakein();
         Shooter.INSTANCE.kickeron();
         m_timer.reset();
@@ -33,30 +36,47 @@ public class AtGoal {
         Shooter.INSTANCE.stop();
         m_timer.reset();
 
+        // turn to row 1 and intake
         if (AutoSettings.INSTANCE.iAmBlue()) {
             AutoDrive.INSTANCE.turnAndHoldHeading(1., -135., 0.5);
         } else {
             AutoDrive.INSTANCE.turnAndHoldHeading(1., 135., 0.5);
         }
-
         Intake.INSTANCE.intakein();
-        AutoDrive.INSTANCE.driveStraight(0.2,0.6,-34,4);
+        Shooter.INSTANCE.kickeron();
+        AutoDrive.INSTANCE.driveStraight(0.2,0.5,-34,2.5);
 
+        // drive out to shooting position and turn to the goal
+        Shooter.INSTANCE.kickerslow();
         AutoDrive.INSTANCE.driveStraight(0.2,0.6,36,4);
-        AutoDrive.INSTANCE.turnAndHoldHeading(1., 0., 0.5);
+        Shooter.INSTANCE.kickeroff();
+        AutoDrive.INSTANCE.turnAndHoldHeading(1., 0., 0.01);
+        Shooter.INSTANCE.kickerout();
+        while (m_timer.milliseconds() < 250.) {}
+        Shooter.INSTANCE.kickeroff();
+
+        // spin up shooter and shoot row one artifacts
         Shooter.INSTANCE.medium();
         m_timer.reset();
-        while (m_timer.milliseconds() < 1000.) {Shooter.INSTANCE.run(); }
-
+        while (m_timer.milliseconds() < 1500.) {Shooter.INSTANCE.run(); Drive.INSTANCE.autoAim(); }
         Shooter.INSTANCE.kickeron();
         Intake.INSTANCE.intakein();;
-
         m_timer.reset();
         while (m_timer.milliseconds() < 3000.) {Shooter.INSTANCE.run(); }
 
+        // turn off shooter and intake
         Shooter.INSTANCE.kickeroff();
         Intake.INSTANCE.intakeoff();;
         Shooter.INSTANCE.stop();
+
+        // strafe off the line
+        if (AutoSettings.INSTANCE.iAmBlue()) {
+            AutoDrive.INSTANCE.strafeStraight(0.2,0.8,-12., 3.);
+        } else {
+            AutoDrive.INSTANCE.strafeStraight(0.2,0.8,12., 3.);
+        }
+
+        /*
         m_timer.reset();
         while (m_timer.milliseconds() < 500.) { }
         if (AutoSettings.INSTANCE.iAmBlue()) {
@@ -73,5 +93,7 @@ public class AtGoal {
         while (m_timer.milliseconds() < 500.) { }
         AutoDrive.INSTANCE.driveStraight(0.2,0.6,34,4);
         m_timer.reset();
+        */
+
     }
 }
