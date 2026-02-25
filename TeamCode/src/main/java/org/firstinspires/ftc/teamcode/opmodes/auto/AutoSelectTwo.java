@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import org.firstinspires.ftc.teamcode.subsystems.ActiveOpMode;
+import org.firstinspires.ftc.teamcode.subsystems.AutoDrive;
 import org.firstinspires.ftc.teamcode.subsystems.LimeLight;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -39,6 +40,7 @@ public class AutoSelectTwo extends LinearOpMode
         Shooter.INSTANCE.init(hardwareMap);
         Intake.INSTANCE.init(hardwareMap);
         Odometry.INSTANCE.teleinit();
+        AutoDrive.INSTANCE.init(telemetry, hardwareMap);
         telemetry.update();
         telemetry.addData(">","hardware init complete.");
 
@@ -92,15 +94,9 @@ public class AutoSelectTwo extends LinearOpMode
             timer.reset();
 
             if (AutoSettings.INSTANCE.pedroGoal()) {
-                PedroAtGoal.init(hardwareMap, telemetry,
-                        AutoSettings.INSTANCE.I_AM_BLUE,
-                        AutoSettings.INSTANCE.ROW_COUNT);
-                PedroAtGoal.run();
+                AtGoal.runTest();
             } else {
-                PedroAtWall.init(hardwareMap, telemetry,
-                        AutoSettings.INSTANCE.I_AM_BLUE,
-                        AutoSettings.INSTANCE.SHOOT_LAST);
-                PedroAtWall.run();
+                AtWall.runTest();
             }
 
 

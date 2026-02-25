@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.AutoDrive;
@@ -21,45 +23,47 @@ public class AtGoal {
         AutoDrive.INSTANCE.driveStraight(0.2,0.6,-50,4);
         Shooter.INSTANCE.medium();
         m_timer.reset();
-        while (m_timer.milliseconds() < 1000.) { }
+        while (m_timer.milliseconds() < 1500.) {Shooter.INSTANCE.run(); }
         Intake.INSTANCE.intakein();
         Shooter.INSTANCE.kickeron();
         m_timer.reset();
-        while (m_timer.milliseconds() < 500.) { }
+        while (m_timer.milliseconds() < 3000.) {Shooter.INSTANCE.run(); }
         Shooter.INSTANCE.kickeroff();
         Intake.INSTANCE.intakein();
         Shooter.INSTANCE.stop();
         m_timer.reset();
-        while (m_timer.milliseconds() < 500.) { }
 
         if (AutoSettings.INSTANCE.iAmBlue()) {
             AutoDrive.INSTANCE.turnAndHoldHeading(1., -135., 0.5);
         } else {
             AutoDrive.INSTANCE.turnAndHoldHeading(1., 135., 0.5);
         }
-        AutoDrive.INSTANCE.driveStraight(0.2,0.6,-34,4);
 
-        m_timer.reset();
-        while (m_timer.milliseconds() < 200.) { }
+        Intake.INSTANCE.intakein();
+        AutoDrive.INSTANCE.driveStraight(0.2,0.6,-34,4);
 
         AutoDrive.INSTANCE.driveStraight(0.2,0.6,36,4);
         AutoDrive.INSTANCE.turnAndHoldHeading(1., 0., 0.5);
         Shooter.INSTANCE.medium();
         m_timer.reset();
-        while (m_timer.milliseconds() < 500.) { }
+        while (m_timer.milliseconds() < 1000.) {Shooter.INSTANCE.run(); }
 
         Shooter.INSTANCE.kickeron();
         Intake.INSTANCE.intakein();;
 
         m_timer.reset();
-        while (m_timer.milliseconds() < 500.) { }
+        while (m_timer.milliseconds() < 3000.) {Shooter.INSTANCE.run(); }
 
         Shooter.INSTANCE.kickeroff();
         Intake.INSTANCE.intakeoff();;
         Shooter.INSTANCE.stop();
         m_timer.reset();
         while (m_timer.milliseconds() < 500.) { }
-        AutoDrive.INSTANCE.turnAndHoldHeading(1,-135,0.5);
+        if (AutoSettings.INSTANCE.iAmBlue()) {
+            AutoDrive.INSTANCE.turnAndHoldHeading(1,-135,0.5);
+        } else {
+            AutoDrive.INSTANCE.turnAndHoldHeading(1., 135., 0.5);
+        }
         AutoDrive.INSTANCE.strafeStraight(0.2,0.6,-24,4);
         m_timer.reset();
         while (m_timer.milliseconds() < 500.) { }
@@ -69,8 +73,5 @@ public class AtGoal {
         while (m_timer.milliseconds() < 500.) { }
         AutoDrive.INSTANCE.driveStraight(0.2,0.6,34,4);
         m_timer.reset();
-
-
-
     }
 }

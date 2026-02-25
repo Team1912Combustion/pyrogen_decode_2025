@@ -57,6 +57,8 @@ public class RunTeleop extends OpMode {
     @Override
     public void loop() {
 
+        Shooter.INSTANCE.run();
+
         if (teleopTimer.seconds() >= 80. & teleopTimer.seconds() <= 90.) {
             if (! endGameWarning) {
                 blinkTimer.reset();
