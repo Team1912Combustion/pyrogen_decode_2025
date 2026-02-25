@@ -29,7 +29,7 @@ public class Shooter {
     public static double PID_D = 0.0;
     public static double PID_F = 0.0;
     static double TARGET_RPM_HIGH = 3025.;
-    static double TARGET_RPM_MED = 2200.;
+    static double TARGET_RPM_MED = 2300.;
     static double TARGET_RPM_LOW = 2000.;
     static double TARGET_VEL_HIGH = TARGET_RPM_HIGH * TICKS_PER_REV * VEL_SCALE / 60;
     static double TARGET_VEL_MED = TARGET_RPM_MED * TICKS_PER_REV * VEL_SCALE / 60;
