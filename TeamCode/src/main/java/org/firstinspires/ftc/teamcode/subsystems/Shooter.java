@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class Shooter {
     public static final Shooter INSTANCE = new Shooter();
     private Shooter() { }
@@ -28,10 +30,12 @@ public class Shooter {
     public static double PID_I = 0.25;
     public static double PID_D = 0.0;
     public static double PID_F = 0.0;
-    static double TARGET_RPM_HIGH = 3025.;
-    static double TARGET_RPM_MED = 2300.;
+    static double TARGET_RPM_HIGH = 2750.;
+    static double TARGET_RPM_AUTOSHOT = 2250;
+    static double TARGET_RPM_MED = 2250.;
     static double TARGET_RPM_LOW = 2000.;
     static double TARGET_VEL_HIGH = TARGET_RPM_HIGH * TICKS_PER_REV * VEL_SCALE / 60;
+    static double TARGET_VEL_AUTOSHOT = TARGET_RPM_AUTOSHOT * TICKS_PER_REV * VEL_SCALE / 60;
     static double TARGET_VEL_MED = TARGET_RPM_MED * TICKS_PER_REV * VEL_SCALE / 60;
     static double TARGET_VEL_LOW = TARGET_RPM_LOW * TICKS_PER_REV * VEL_SCALE / 60;
 
@@ -48,6 +52,7 @@ public class Shooter {
     public void high() {
         left_motor.setVelocity(TARGET_VEL_HIGH);
     }
+    public void autoshot(){left_motor.setVelocity(TARGET_VEL_AUTOSHOT);}
 
     public void stop() {
         left_motor.setVelocity(0.);
@@ -62,7 +67,7 @@ public class Shooter {
     public void kickeron() {
         kicker.setPower(1.);
     }
-    public void kickerslow(){kicker.setPower(0.4);}
+    public void kickerslow(){kicker.setPower(0.25);}
     public void kickerout() {
         kicker.setPower(-1.0);
     }
@@ -77,8 +82,8 @@ public class Shooter {
         right_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         right_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        left_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        right_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        left_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        right_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         kicker = hMap.get(DcMotorEx.class,kicker_name);
         kicker.setDirection(DcMotorSimple.Direction.FORWARD);

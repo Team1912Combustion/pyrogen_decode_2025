@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.AutoDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -17,21 +18,29 @@ public class AtWall {
 
     public static void runTest() {
         ElapsedTime m_timer = new ElapsedTime();
-        m_timer.reset();
-        while (m_timer.milliseconds() < 1000.) { }
+
+
+
         AutoDrive.INSTANCE.driveStraight(0.2, 0.6, 1., 1.);
         if (AutoSettings.INSTANCE.iAmBlue()) {
-            AutoDrive.INSTANCE.turnAndHoldHeading(1., 22., 0.5);
+            AutoDrive.INSTANCE.turnAndHoldHeading(1., 27., 0.5);
         } else{
-            AutoDrive.INSTANCE.turnAndHoldHeading(1., -22., 0.5);
+            AutoDrive.INSTANCE.turnAndHoldHeading(1., -26., 0.5);
         }
         Shooter.INSTANCE.high();
+
         m_timer.reset();
-        while (m_timer.milliseconds() < 2000.) { }
+        while (m_timer.milliseconds() < 1750.) {Drive.INSTANCE.autoAim(); Shooter.INSTANCE.run(); }
+
+        Shooter.INSTANCE.kickerout();
+        m_timer.reset();
+        while (m_timer.milliseconds() < 250.) {Drive.INSTANCE.autoAim(); Shooter.INSTANCE.run(); }
+
+
         Intake.INSTANCE.intakein();
         Shooter.INSTANCE.kickeron();
         m_timer.reset();
-        while (m_timer.milliseconds() < 5000.) { }
+        while (m_timer.milliseconds() < 5000.) {Shooter.INSTANCE.run(); }
         Shooter.INSTANCE.stop();
         Intake.INSTANCE.intakeoff();
         Shooter.INSTANCE.kickeroff();

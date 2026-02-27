@@ -23,8 +23,8 @@ public class AtGoal {
         while (m_timer.milliseconds() < 100.) { }
 
         // back up to shooting position and shoot preloaded artifacts
-        AutoDrive.INSTANCE.driveStraight(0.2,0.6,-50,4);
-        Shooter.INSTANCE.medium();
+        AutoDrive.INSTANCE.driveStraight(0.2,0.6,-60,4);
+        Shooter.INSTANCE.autoshot();
         m_timer.reset();
         while (m_timer.milliseconds() < 1500.) {Shooter.INSTANCE.run(); Drive.INSTANCE.autoAim(); }
         Intake.INSTANCE.intakein();
@@ -32,31 +32,31 @@ public class AtGoal {
         m_timer.reset();
         while (m_timer.milliseconds() < 3000.) {Shooter.INSTANCE.run(); }
         Shooter.INSTANCE.kickeroff();
-        Intake.INSTANCE.intakein();
+        Intake.INSTANCE.intakeoff();
         Shooter.INSTANCE.stop();
         m_timer.reset();
 
         // turn to row 1 and intake
         if (AutoSettings.INSTANCE.iAmBlue()) {
-            AutoDrive.INSTANCE.turnAndHoldHeading(1., -135., 0.5);
+            AutoDrive.INSTANCE.turnAndHoldHeading(0.8, -135., 0.5);
         } else {
-            AutoDrive.INSTANCE.turnAndHoldHeading(1., 135., 0.5);
+            AutoDrive.INSTANCE.turnAndHoldHeading(0.8, 135., 0.5);
         }
+
+        Shooter.INSTANCE.kickerslow();
         Intake.INSTANCE.intakein();
-        Shooter.INSTANCE.kickeron();
-        AutoDrive.INSTANCE.driveStraight(0.2,0.5,-34,2.5);
+        AutoDrive.INSTANCE.driveStraight(0.2,0.6,-36,2.5);
 
         // drive out to shooting position and turn to the goal
-        Shooter.INSTANCE.kickerslow();
-        AutoDrive.INSTANCE.driveStraight(0.2,0.6,36,4);
+        AutoDrive.INSTANCE.driveStraight(0.2,0.6,37,4);
         Shooter.INSTANCE.kickeroff();
-        AutoDrive.INSTANCE.turnAndHoldHeading(1., 0., 0.01);
+        AutoDrive.INSTANCE.turnAndHoldHeading(0.8, 0., 0.5);
         Shooter.INSTANCE.kickerout();
         while (m_timer.milliseconds() < 250.) {}
         Shooter.INSTANCE.kickeroff();
 
         // spin up shooter and shoot row one artifacts
-        Shooter.INSTANCE.medium();
+        Shooter.INSTANCE.autoshot();
         m_timer.reset();
         while (m_timer.milliseconds() < 1500.) {Shooter.INSTANCE.run(); Drive.INSTANCE.autoAim(); }
         Shooter.INSTANCE.kickeron();
@@ -71,9 +71,9 @@ public class AtGoal {
 
         // strafe off the line
         if (AutoSettings.INSTANCE.iAmBlue()) {
-            AutoDrive.INSTANCE.strafeStraight(0.2,0.8,-12., 3.);
+            AutoDrive.INSTANCE.strafeStraight(0.2,0.8,24., 3.);
         } else {
-            AutoDrive.INSTANCE.strafeStraight(0.2,0.8,12., 3.);
+            AutoDrive.INSTANCE.strafeStraight(0.2,0.8,-24., 3.);
         }
 
         /*
