@@ -30,7 +30,7 @@ public class Shooter {
     public static double PID_I = 0.25;
     public static double PID_D = 0.0;
     public static double PID_F = 0.0;
-    static double TARGET_RPM_HIGH = 2750.;
+    static double TARGET_RPM_HIGH = 2740.;
     static double TARGET_RPM_AUTOSHOT = 2250;
     static double TARGET_RPM_MED = 2250.;
     static double TARGET_RPM_LOW = 2000.;

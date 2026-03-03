@@ -45,10 +45,10 @@ public class AtGoal {
 
         Shooter.INSTANCE.kickerslow();
         Intake.INSTANCE.intakein();
-        AutoDrive.INSTANCE.driveStraight(0.2,0.6,-36,2.5);
+        AutoDrive.INSTANCE.driveStraight(0.2,0.6,-38,2.5);
 
         // drive out to shooting position and turn to the goal
-        AutoDrive.INSTANCE.driveStraight(0.2,0.6,37,4);
+        AutoDrive.INSTANCE.driveStraight(0.2,0.6,35,2.5);
         Shooter.INSTANCE.kickeroff();
         AutoDrive.INSTANCE.turnAndHoldHeading(0.8, 0., 0.5);
         Shooter.INSTANCE.kickerout();

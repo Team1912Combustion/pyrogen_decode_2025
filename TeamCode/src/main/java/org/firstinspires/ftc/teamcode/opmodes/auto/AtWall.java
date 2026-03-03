@@ -25,7 +25,7 @@ public class AtWall {
         if (AutoSettings.INSTANCE.iAmBlue()) {
             AutoDrive.INSTANCE.turnAndHoldHeading(1., 27., 0.5);
         } else{
-            AutoDrive.INSTANCE.turnAndHoldHeading(1., -26., 0.5);
+            AutoDrive.INSTANCE.turnAndHoldHeading(1., -27., 0.5);
         }
         Shooter.INSTANCE.high();
 
@@ -40,13 +40,52 @@ public class AtWall {
         Intake.INSTANCE.intakein();
         Shooter.INSTANCE.kickeron();
         m_timer.reset();
-        while (m_timer.milliseconds() < 5000.) {Shooter.INSTANCE.run(); }
+        while (m_timer.milliseconds() < 3000.) {Shooter.INSTANCE.run(); }
         Shooter.INSTANCE.stop();
-        Intake.INSTANCE.intakeoff();
         Shooter.INSTANCE.kickeroff();
 
         AutoDrive.INSTANCE.turnAndHoldHeading(1., 0., 0.5);
-        AutoDrive.INSTANCE.driveStraight(0.2, 0.6, 18., 4.);
+        m_timer.reset();
+        while (m_timer.milliseconds() < 3000.) { }
+        if (AutoSettings.INSTANCE.iAmBlue()) {
+            AutoDrive.INSTANCE.turnAndHoldHeading(1.,-90,0.5);
+        } else {
+            AutoDrive.INSTANCE.turnAndHoldHeading(1., 90., 0.5);
+        }
+        AutoDrive.INSTANCE.driveStraight(0.2, 0.4, -55, 3.);
+
+        m_timer.reset();
+        while (m_timer.milliseconds() < 1000.) { }
+        Shooter.INSTANCE.kickerslow();
+        AutoDrive.INSTANCE.driveStraight(0.2,0.6,30,4.);
+        if (AutoSettings.INSTANCE.iAmBlue()) {
+        AutoDrive.INSTANCE.turnAndHoldHeading(1., 27., 1.);
+        } else {
+            AutoDrive.INSTANCE.turnAndHoldHeading(1., -27., 1.);
+        }
+        Shooter.INSTANCE.high();
+
+        m_timer.reset();
+        while (m_timer.milliseconds() < 1000.) {Drive.INSTANCE.autoAim(); Shooter.INSTANCE.run(); }
+        Shooter.INSTANCE.kickeroff();
+        Intake.INSTANCE.intakeout();
+        m_timer.reset();
+        while  (m_timer.milliseconds() < 3000.) {Shooter.INSTANCE.run();}
+        Shooter.INSTANCE.stop();
+        AutoDrive.INSTANCE.driveStraight(0.2,0.6,10,2);
+        AutoDrive.INSTANCE.strafeStraight(0.2,0.6,24,3);
+
+
+
+       /* m_timer.reset();
+        while (m_timer.milliseconds() < 100.) { }
+        Shooter.INSTANCE.high();
+        Shooter.INSTANCE.kickeron();
+
+        */
+
+
+        //AutoDrive.INSTANCE.driveStraight(0.2, 0.6, 18., 4.);
 
     }
 
